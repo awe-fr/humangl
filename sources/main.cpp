@@ -60,8 +60,9 @@ int main(void) {
 	
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CW);
 	glCullFace(GL_BACK);
 
 	float set = 0;
@@ -72,48 +73,51 @@ int main(void) {
 
 		mat4 translation = identityMat(1);
 
-		translation.data[2][3] = 1;
+		translation.data[2][3] = -3;
 
 		mat4 rotation = identityMat(1);
 
 		rotation.data[0][0] = cos(set);
-		rotation.data[0][2] = -sin(set);
-		rotation.data[2][0] = sin(set);
+		rotation.data[0][2] = sin(set);
+		rotation.data[2][0] = -sin(set);
 		rotation.data[2][2] = cos(set);
 
 		set += 0.0005;
 
-		// mat4 Projection = identityMat(1);
+		mat4 Projection = identityMat(1);
+		float FOV = 90;
+		float front = 0.1;
+		float back = 10;
+		float aspectRatio = 1280 / 720;
 
-		// float FOV = 90;
+		const float DEG2RAD = acos(-1.0f) / 180;
+
+		float tangent = tan(FOV/2 * DEG2RAD);    // tangent of half fovX
+		float right = front * tangent;            // half width of near plane
+		float top = right / aspectRatio; 
+
+
+		Projection.data[0][0] = front / right;
+		Projection.data[1][1] = front / top;
+		Projection.data[2][2] = -(back + front) / (back - front);
+		Projection.data[3][2] = -1;
+		Projection.data[2][3] = -(2 * back * front) / (back - front);
+		Projection.data[3][3] = 0;
+
     	// float const tanHalfFovy = tan(getRad(FOV / 2));
 		// float p = 1/ tanHalfFovy;
 
-		// Projection.data[0][0] = p;
-		// Projection.data[1][1] = p;
-		// Projection.data[3][2] = 1;
-		// Projection.data[3][3] = 0;
-		float FOV = 90.0f; // ou un autre angle qui vous convient
-		float aspectRatio = WIDTH / HEIGHT;
-		float nearPlane = 0.1f;
-		float farPlane = 100.0f;
-		float tanHalfFovy = tan(FOV / 2.0f);
-
-		mat4 Projection = identityMat(1.0f); // Assuming you have an identity matrix function
-
-		Projection.data[0][0] = 1.0f / (aspectRatio * tanHalfFovy);
-		Projection.data[1][1] = 1.0f / tanHalfFovy;
-		Projection.data[2][2] = farPlane / (farPlane - nearPlane);
-		Projection.data[2][3] = 1.0f;  // Notice this is positive, for left-handed coordinates
-		Projection.data[3][2] = -(nearPlane * farPlane) / (farPlane - nearPlane);
-		Projection.data[3][3] = 0.0f;
+		// Projection.data[0][0] = 1;
+		// Projection.data[1][1] = 1;
+		// Projection.data[2][3] = 1;
+		// Projection.data[3][3] = 1;
 
 		
 		Projection = matMult(Projection, matMult(translation, rotation));
 
 
 		GLuint projection = glGetUniformLocation(programID, "Projection");
-		glUniformMatrix4fv(projection, 1, GL_TRUE, &Projection.data[0][0]);
+		glUniformMatrix4fv(projection, 1, GL_FALSE, &Projection.data[0][0]);
 
 
 		// mat4 projection = projectionMat(90, WIDTH / HEIGHT, 0.1f, 100.0f);
