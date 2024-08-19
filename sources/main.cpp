@@ -65,7 +65,6 @@ int main(void) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	float set = 0;
 	while(app->isClosed() != true) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -76,48 +75,16 @@ int main(void) {
 		translation.data[2][3] = -3;
 
 		mat4 rotation = identityMat(1);
-
-		rotation.data[0][0] = cos(set);
-		rotation.data[0][2] = sin(set);
-		rotation.data[2][0] = -sin(set);
-		rotation.data[2][2] = cos(set);
-
-		set += 0.0005;
-
-		mat4 Projection = identityMat(1);
-		float FOV = 90;
-		float front = 0.1;
-		float back = 10;
-		float aspectRatio = 1280 / 720;
-
-		const float DEG2RAD = acos(-1.0f) / 180;
-
-		float tangent = tan(FOV/2 * DEG2RAD);    // tangent of half fovX
-		float right = front * tangent;            // half width of near plane
-		float top = right / aspectRatio; 
-
-
-		Projection.data[0][0] = front / right;
-		Projection.data[1][1] = front / top;
-		Projection.data[2][2] = -(back + front) / (back - front);
-		Projection.data[3][2] = -1;
-		Projection.data[2][3] = -(2 * back * front) / (back - front);
-		Projection.data[3][3] = 0;
-
-    	// float const tanHalfFovy = tan(getRad(FOV / 2));
-		// float p = 1/ tanHalfFovy;
-
-		// Projection.data[0][0] = 1;
-		// Projection.data[1][1] = 1;
-		// Projection.data[2][3] = 1;
-		// Projection.data[3][3] = 1;
-
+		
+		mat4 Projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 10.0f);
 		
 		Projection = matMult(Projection, matMult(translation, rotation));
 
+		float temp[16];
+		populateMat(temp, Projection);
 
 		GLuint projection = glGetUniformLocation(programID, "Projection");
-		glUniformMatrix4fv(projection, 1, GL_FALSE, &Projection.data[0][0]);
+		glUniformMatrix4fv(projection, 1, GL_FALSE, temp);
 
 
 		// mat4 projection = projectionMat(90, WIDTH / HEIGHT, 0.1f, 100.0f);

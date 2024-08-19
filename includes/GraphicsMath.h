@@ -1,7 +1,9 @@
 #ifndef GRAPHICSMATH_H
 # define GRAPHICSMATH_H
 
-# include "./header.h"
+# include <cmath>
+
+# define DEG2RAD acos(-1.0f) / 180.0f
 
 struct mat4 {
 	float data[4][4];	
@@ -25,6 +27,9 @@ mat4 identityMat(float id);
 mat4 scaletyMat(float x, float y, float z);
 mat4 projectionMat(float FOV, float aspect, float znear, float zfar);
 mat4 viewMat(vec3 eye, vec3 target, vec3 up);
+mat4 rotationMatY(float degree);
+mat4 rotationMatX(float degree);
+mat4 rotationMatZ(float degree);
 void populateMat(float buf[16], mat4 m);
 
 vec3 vecCross(vec3 f, vec3 d);

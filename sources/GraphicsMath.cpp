@@ -47,42 +47,57 @@ mat4 scaletyMat(float x, float y, float z) {
 }
 
 mat4 projectionMat(float FOV, float aspect, float znear, float zfar) {
-	mat4 matrix = identityMat(0);
+	mat4 matrix = identityMat(1);
 
-	matrix.data[0][0] = aspect * (1 / tan(FOV / 2));
-	matrix.data[1][1] = (1 / tan(FOV / 2));
-	matrix.data[2][2] =	zfar / (zfar - znear);
-	matrix.data[2][3] = (-zfar * znear) / (zfar - znear);
-	matrix.data[3][2] = 1.0;
+	float angle = tan(FOV / 2 * DEG2RAD);
+
+	matrix.data[0][0] = znear / (znear * angle);
+	matrix.data[1][1] = znear / ((znear * angle) / aspect);
+	matrix.data[2][2] = -(zfar + znear) / (zfar - znear);
+	matrix.data[3][2] = -1;
+	matrix.data[2][3] = -(2.0f * zfar * znear) / (zfar - znear);
 	matrix.data[3][3] = 0;
 
 	return (matrix);
 }
 
-mat4 viewMat(vec3 eye, vec3 target, vec3 up) {
-	vec3 zaxis = vecNormalize(vecSubstract(eye, target));
-	vec3 xaxis = vecNormalize(vecCross(up, zaxis));
-	vec3 yaxis = vecCross(zaxis, xaxis);
+mat4 rotationMatX(float degree) {
+	mat4 matrix = identityMat(1);
 
-	mat4 orientation = identityMat(1.0f);
+	float angle = degree * DEG2RAD;
 
-	orientation.data[0][0] = xaxis.x; 
-	orientation.data[1][0] = xaxis.y;
-	orientation.data[2][0] = xaxis.z;
-	orientation.data[0][1] = yaxis.x;
-	orientation.data[1][1] = yaxis.y; 
-	orientation.data[2][1] = yaxis.z;
-	orientation.data[0][2] = zaxis.x;
-	orientation.data[1][2] = zaxis.y;
-	orientation.data[2][2] = zaxis.z;
+	matrix.data[1][1] = cos(angle);
+	matrix.data[1][2] = -sin(angle);
+	matrix.data[2][1] = sin(angle);
+	matrix.data[2][2] = cos(angle);
 
-	mat4 translation = identityMat(1.0f);
+	return matrix;
+}
 
-	translation.data[3][0] = -eye.x;
-	translation.data[3][1] = -eye.y;
-	translation.data[3][2] = -eye.z;
+mat4 rotationMatY(float degree) {
+	mat4 matrix = identityMat(1);
 
-	return (matMult(orientation, translation));
+	float angle = degree * DEG2RAD;
+
+	matrix.data[0][0] = cos(angle);
+	matrix.data[0][2] = sin(angle);
+	matrix.data[2][0] = -sin(angle);
+	matrix.data[2][2] = cos(angle);
+
+	return matrix;
+}
+
+mat4 rotationMatZ(float degree) {
+	mat4 matrix = identityMat(1);
+
+	float angle = degree * DEG2RAD;
+
+	matrix.data[0][0] = cos(angle);
+	matrix.data[0][1] = -sin(angle);
+	matrix.data[1][0] = sin(angle);
+	matrix.data[1][1] = cos(angle);
+
+	return matrix;
 }
 
 void populateMat(float buf[16], mat4 m)
