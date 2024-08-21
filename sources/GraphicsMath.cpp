@@ -61,6 +61,39 @@ mat4 projectionMat(float FOV, float aspect, float znear, float zfar) {
 	return (matrix);
 }
 
+mat4 viewMat(vec3 eye, vec3 target, vec3 up) {
+	mat4 matrix = identityMat(1);
+
+	vec3 forward = vecNormalize(vecSubstract(eye, target));
+	vec3 left = vecNormalize(vecCross(up, forward));
+	up = vecCross(forward, left);
+
+	matrix.data[0][0] = left.x; 
+	matrix.data[0][1] = left.y;
+	matrix.data[0][2] = left.z; 
+	matrix.data[1][0] = up.x;
+	matrix.data[1][1] = up.y;
+	matrix.data[1][2] = up.z;
+	matrix.data[2][0] = forward.x;
+	matrix.data[2][1] = forward.y;
+	matrix.data[2][2] = forward.z;
+	matrix.data[0][3] = -vecDot(left, eye);
+	matrix.data[1][3] = -vecDot(up, eye);
+	matrix.data[2][3] = -vecDot(forward, eye);
+
+	return (matrix);
+}
+
+mat4 translationMat(float x, float y, float z) {
+	mat4 matrix = identityMat(1);
+
+	matrix.data[0][3] = x;
+	matrix.data[1][3] = y;
+	matrix.data[2][3] = z;
+
+	return (matrix);
+}
+
 mat4 rotationMatX(float degree) {
 	mat4 matrix = identityMat(1);
 
@@ -105,6 +138,10 @@ void populateMat(float buf[16], mat4 m)
 	for (int y = 0; y < 4; ++y)
 		for (int x = 0; x < 4; ++x)
 			buf[4 * y + x] = m.data[x][y];
+}
+
+float vecDot(vec3 a, vec3 b) {
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
 
 vec3 vecCross(vec3 f, vec3 s) {

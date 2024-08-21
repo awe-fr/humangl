@@ -27,11 +27,13 @@ mat4 identityMat(float id);
 mat4 scaletyMat(float x, float y, float z);
 mat4 projectionMat(float FOV, float aspect, float znear, float zfar);
 mat4 viewMat(vec3 eye, vec3 target, vec3 up);
+mat4 translationMat(float x, float y, float z);
 mat4 rotationMatY(float degree);
 mat4 rotationMatX(float degree);
 mat4 rotationMatZ(float degree);
 void populateMat(float buf[16], mat4 m);
 
+float vecDot(vec3 a, vec3 b);
 vec3 vecCross(vec3 f, vec3 d);
 vec3 vecNormalize(vec3 f);
 vec3 vecMultiplication(vec3 f, float s);

@@ -18,4 +18,8 @@
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 
+mat4 movement(GLFWwindow *window);
+
+void getDeltaTime(void);
+
 #endif

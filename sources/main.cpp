@@ -1,5 +1,7 @@
 #include "./../includes/header.h"
 
+float deltaTime;
+
 static const GLfloat g_vertex_buffer_data[] = {
 	0.5f, 0.5f, 0.5f,
    -0.5f, 0.5f, -0.5f,
@@ -25,18 +27,12 @@ unsigned int Indices[] = { // Top triangles
                               2, 1, 4,
                               0, 2, 7 };
 
-void printmat(mat4 print) {
-	for (int y = 0; y < 4; y++) {
-		for (int x = 0; x < 4; x++) {
-			std::cout << print.data[y][x] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-}
+void getDeltaTime(void) {
+	static double last = glfwGetTime();
 
-float getRad(float toRad) {
-	return (toRad * (M_PI / 2));
+	double now = glfwGetTime();
+	deltaTime = (float)(now - last);
+	last = now;
 }
 
 int main(void) {
@@ -65,52 +61,37 @@ int main(void) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	float ref = 0;
+
 	while(app->isClosed() != true) {
+		getDeltaTime();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(programID);
 
-		mat4 translation = identityMat(1);
+		vec3 eye; eye.x = 4; eye.y = 3; eye.z = 3;
+		vec3 target; target.x = 0; target.y = 0; target.z = 0;
+		vec3 up; up.x = 0; up.y = 1; up.z = 0;
 
-		translation.data[2][3] = -3;
+		mat4 view = movement(app->getWindow());
 
-		mat4 rotation = identityMat(1);
+		mat4 translation = translationMat(0, 0, 0);
+
+		mat4 rotation = rotationMatY(ref);
+		ref += 0.005;
+
+		mat4 Projection = projectionMat(120.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 		
-		mat4 Projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 10.0f);
-		
-		Projection = matMult(Projection, matMult(translation, rotation));
+		mat4 MVP = matMult(Projection, matMult(view, matMult(translation, rotation)));
 
 		float temp[16];
-		populateMat(temp, Projection);
+		populateMat(temp, MVP);
 
-		GLuint projection = glGetUniformLocation(programID, "Projection");
+		GLuint projection = glGetUniformLocation(programID, "MVP");
 		glUniformMatrix4fv(projection, 1, GL_FALSE, temp);
 
+ 
 
-		// mat4 projection = projectionMat(90, WIDTH / HEIGHT, 0.1f, 100.0f);
-
-		// vec3 eye; eye.x = 4; eye.y = 3; eye.z = 3;
-		// vec3 target; target.x = 0; target.y = 0; target.z = 0;
-		// vec3 up; up.x = 0; up.y = 1; up.z = 0;
-		// mat4 view = viewMat(eye, target, up);
-
-		// mat4 model = identityMat(1.0f);
-
-		// GLuint ProjectionID = glGetUniformLocation(programID, "Projection");
-		// GLuint ViewID = glGetUniformLocation(programID, "View");
-		// GLuint ModelID = glGetUniformLocation(programID, "Model");
-
-		// float projectionBuf[16] = {0};
-		// float viewBuf[16] = {0};
-		// float modelBuf[16] = {0};
-
-		// populateMat(projectionBuf, projection);
-		// populateMat(viewBuf, view);
-		// populateMat(modelBuf, model);
-
-		// glUniformMatrix4fv(ProjectionID, 1, GL_TRUE, projectionBuf);
-		// glUniformMatrix4fv(ViewID, 1, GL_FALSE, viewBuf);
-		// glUniformMatrix4fv(ModelID, 1, GL_FALSE, modelBuf);
 
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);

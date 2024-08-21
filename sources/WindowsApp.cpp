@@ -41,3 +41,7 @@ bool WindowsApp::isClosed() {
     glfwPollEvents();
     return (false);
 }
+
+GLFWwindow *WindowsApp::getWindow() {
+    return (this->_window);
+}

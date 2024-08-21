@@ -10,6 +10,7 @@ class WindowsApp {
 		WindowsApp();
 		~WindowsApp();
 
+		GLFWwindow *getWindow();
 		bool isClosed();
 };
 
