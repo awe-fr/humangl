@@ -65,24 +65,19 @@ int main(void) {
 
 	while(app->isClosed() != true) {
 		getDeltaTime();
+		std::cout << 1 / deltaTime << std::endl;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(programID);
 
-		vec3 eye; eye.x = 4; eye.y = 3; eye.z = 3;
-		vec3 target; target.x = 0; target.y = 0; target.z = 0;
-		vec3 up; up.x = 0; up.y = 1; up.z = 0;
-
 		mat4 view = movement(app->getWindow());
 
-		mat4 translation = translationMat(0, 0, 0);
-
-		mat4 rotation = rotationMatY(ref);
+		mat4 model = rotationMatY(ref);
 		ref += 0.005;
 
-		mat4 Projection = projectionMat(120.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		mat4 Projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 		
-		mat4 MVP = matMult(Projection, matMult(view, matMult(translation, rotation)));
+		mat4 MVP = matMult(Projection, matMult(view, model));
 
 		float temp[16];
 		populateMat(temp, MVP);
