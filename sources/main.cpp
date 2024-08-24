@@ -1,6 +1,4 @@
-#include "./../includes/header.h"
-
-float deltaTime;
+#include "./../includes/WindowsApp.hpp"
 
 static const GLfloat g_vertex_buffer_data[] = {
 	0.5f, 0.5f, 0.5f,
@@ -27,14 +25,6 @@ unsigned int Indices[] = { // Top triangles
                               2, 1, 4,
                               0, 2, 7 };
 
-void getDeltaTime(void) {
-	static double last = glfwGetTime();
-
-	double now = glfwGetTime();
-	deltaTime = (float)(now - last);
-	last = now;
-}
-
 int main(void) {
 	WindowsApp *app = new WindowsApp();
 
@@ -51,8 +41,6 @@ int main(void) {
 	glGenBuffers(1, &IBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
-
-	GLuint programID = LoadShaders( "./shaders/shader.vert", "./shaders/shader.frag" );
 	
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -64,30 +52,23 @@ int main(void) {
 	float ref = 0;
 
 	while(app->isClosed() != true) {
-		getDeltaTime();
-		std::cout << 1 / deltaTime << std::endl;
+		std::cout << 1 / app->getDeltaTime() << std::endl;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(programID);
+		glUseProgram(app->getProgramID());
 
-		mat4 view = movement(app->getWindow());
+		app->computeMovement();
 
 		mat4 model = rotationMatY(ref);
 		ref += 0.005;
-
-		mat4 Projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 		
-		mat4 MVP = matMult(Projection, matMult(view, model));
+		mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), model));
 
 		float temp[16];
 		populateMat(temp, MVP);
 
-		GLuint projection = glGetUniformLocation(programID, "MVP");
+		GLuint projection = glGetUniformLocation(app->getProgramID(), "MVP");
 		glUniformMatrix4fv(projection, 1, GL_FALSE, temp);
-
- 
-
-
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);

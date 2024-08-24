@@ -2,9 +2,7 @@ NAME = humangl
 
 SRCS = sources/main.cpp\
 		sources/WindowsApp.cpp\
-		sources/ShaderLoader.cpp\
 		sources/GraphicsMath.cpp\
-		sources/Controls.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 
