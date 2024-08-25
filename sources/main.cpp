@@ -1,14 +1,14 @@
 #include "./../includes/WindowsApp.hpp"
 
 static const GLfloat g_vertex_buffer_data[] = {
-	0.5f, 0.5f, 0.5f,
-   -0.5f, 0.5f, -0.5f,
-    -0.5f, 0.5f, 0.5f,
-    0.5f, -0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,
-    0.5f, 0.5f, -0.5f,
-    0.5f, -0.5f, 0.5f, 
-    -0.5f, -0.5f, 0.5f
+	0.05f, 0.5f, 0.05f,
+   -0.05f, 0.5f, -0.05f,
+    -0.05f, 0.5f, 0.05f,
+    0.05f, -0.5f, -0.05f,
+    -0.05f, -0.5f, -0.05f,
+    0.05f, 0.5f, -0.05f,
+    0.05f, -0.5f, 0.05f, 
+    -0.05f, -0.5f, 0.05f
 };
 
 unsigned int Indices[] = { // Top triangles
@@ -49,26 +49,32 @@ int main(void) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	float ref = 0;
+	float ref1 = 180;
+	float ref2 = 35;
+	float ref3 = 287;
+	float ref4 = 90;
 
 	while(app->isClosed() != true) {
-		std::cout << 1 / app->getDeltaTime() << std::endl;
+		// std::cout << 1 / app->getDeltaTime() << std::endl;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(app->getProgramID());
 
 		app->computeMovement();
 
-		mat4 model = rotationMatY(ref);
-		ref += 0.005;
+		mat4 model = matMult(rotationMatZ(ref1), translationMat(0, 0.5f, 0));
+		ref1 += 0.055;
+		ref2 -= 0.010;
+		ref3 -= 0.040;
+		ref4 += 0.070;
 		
 		mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), model));
 
 		float temp[16];
 		populateMat(temp, MVP);
 
-		GLuint projection = glGetUniformLocation(app->getProgramID(), "MVP");
-		glUniformMatrix4fv(projection, 1, GL_FALSE, temp);
+		GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
+		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
@@ -77,6 +83,49 @@ int main(void) {
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+
+
+
+		model = matMult(matMult(rotationMatZ(ref2), translationMat(0, 0.5f, 0)), translationMat(sin((ref2 - ref1)* DEG2RAD), cos((ref2 - ref1)* DEG2RAD), 0));
+		
+		MVP = matMult(app->getProjection(), matMult(app->getView(), model));
+
+		populateMat(temp, MVP);
+
+		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
+
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+
+
+		model = matMult(matMult(rotationMatZ(ref3), translationMat(0, 0.5f, 0)), translationMat(sin((ref3 - ref1)* DEG2RAD), cos((ref3 - ref1)* DEG2RAD), 0));
+		model = matMult(model, translationMat(sin((ref3 - ref2)* DEG2RAD), cos((ref3 - ref2)* DEG2RAD), 0));
+
+		MVP = matMult(app->getProjection(), matMult(app->getView(), model));
+
+		populateMat(temp, MVP);
+
+		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
+
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+
+
+		model = matMult(matMult(rotationMatZ(ref4), translationMat(0, 0.5f, 0)), translationMat(sin((ref4 - ref1)* DEG2RAD), cos((ref4 - ref1)* DEG2RAD), 0));
+		model = matMult(model, translationMat(sin((ref4 - ref2)* DEG2RAD), cos((ref4 - ref2)* DEG2RAD), 0));
+		model = matMult(model, translationMat(sin((ref4 - ref3)* DEG2RAD), cos((ref4 - ref3)* DEG2RAD), 0));
+
+		MVP = matMult(app->getProjection(), matMult(app->getView(), model));
+
+		populateMat(temp, MVP);
+
+		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
+
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+
+
 		glDisableVertexAttribArray(0);
 	}
 	delete app;
