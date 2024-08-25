@@ -1,4 +1,4 @@
-#include "./../includes/WindowsApp.hpp"
+#include "./../includes/WindowApp.hpp"
 
 WindowsApp::WindowsApp() {
     if (!glfwInit()) {

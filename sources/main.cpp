@@ -1,47 +1,11 @@
-#include "./../includes/WindowsApp.hpp"
-
-static const GLfloat g_vertex_buffer_data[] = {
-	0.05f, 0.5f, 0.05f,
-   -0.05f, 0.5f, -0.05f,
-    -0.05f, 0.5f, 0.05f,
-    0.05f, -0.5f, -0.05f,
-    -0.05f, -0.5f, -0.05f,
-    0.05f, 0.5f, -0.05f,
-    0.05f, -0.5f, 0.05f, 
-    -0.05f, -0.5f, 0.05f
-};
-
-unsigned int Indices[] = { // Top triangles
-                               0, 1, 2,
-                              1, 3, 4,
-                              5, 6, 3,
-                              7, 3, 6,
-                              2, 4, 7,
-                              0, 7, 6,
-                              0, 5, 1,
-                              1, 5, 3,
-                              5, 0, 6,
-                              7, 4, 3,
-                              2, 1, 4,
-                              0, 2, 7 };
+#include "./../includes/WindowApp.hpp"
+#include "./../includes/Member.hpp"
 
 int main(void) {
 	WindowsApp *app = new WindowsApp();
 
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+	Member *test1 = new Member("test", 1);
 
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-	GLuint IBO;
-	glGenBuffers(1, &IBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
-	
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
@@ -49,20 +13,24 @@ int main(void) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+
 	float ref1 = 180;
 	float ref2 = 35;
 	float ref3 = 287;
 	float ref4 = 90;
 
 	while(app->isClosed() != true) {
-		// std::cout << 1 / app->getDeltaTime() << std::endl;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(app->getProgramID());
 
+		glBindVertexArray(test1->getVAO());
+		glBindBuffer(GL_ARRAY_BUFFER, test1->getVBO());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test1->getIBO());
+
 		app->computeMovement();
 
-		mat4 model = matMult(rotationMatZ(ref1), translationMat(0, 0.5f, 0));
+		mat4 model = matMult(rotationMatZ(ref1), translationMat(0, 0.0f, 0));
 		ref1 += 0.055;
 		ref2 -= 0.010;
 		ref3 -= 0.040;
@@ -76,58 +44,14 @@ int main(void) {
 		GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
 		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-
-
-		model = matMult(matMult(rotationMatZ(ref2), translationMat(0, 0.5f, 0)), translationMat(sin((ref2 - ref1)* DEG2RAD), cos((ref2 - ref1)* DEG2RAD), 0));
-		
-		MVP = matMult(app->getProjection(), matMult(app->getView(), model));
-
-		populateMat(temp, MVP);
-
-		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
-
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-
-		model = matMult(matMult(rotationMatZ(ref3), translationMat(0, 0.5f, 0)), translationMat(sin((ref3 - ref1)* DEG2RAD), cos((ref3 - ref1)* DEG2RAD), 0));
-		model = matMult(model, translationMat(sin((ref3 - ref2)* DEG2RAD), cos((ref3 - ref2)* DEG2RAD), 0));
-
-		MVP = matMult(app->getProjection(), matMult(app->getView(), model));
-
-		populateMat(temp, MVP);
-
-		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
-
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-
-		model = matMult(matMult(rotationMatZ(ref4), translationMat(0, 0.5f, 0)), translationMat(sin((ref4 - ref1)* DEG2RAD), cos((ref4 - ref1)* DEG2RAD), 0));
-		model = matMult(model, translationMat(sin((ref4 - ref2)* DEG2RAD), cos((ref4 - ref2)* DEG2RAD), 0));
-		model = matMult(model, translationMat(sin((ref4 - ref3)* DEG2RAD), cos((ref4 - ref3)* DEG2RAD), 0));
-
-		MVP = matMult(app->getProjection(), matMult(app->getView(), model));
-
-		populateMat(temp, MVP);
-
-		glUniformMatrix4fv(mvp, 1, GL_FALSE, temp);
-
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-
 		glDisableVertexAttribArray(0);
 	}
+	delete test1;
 	delete app;
 	return (0);
 }

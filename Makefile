@@ -1,8 +1,9 @@
 NAME = humangl
 
 SRCS = sources/main.cpp\
-		sources/WindowsApp.cpp\
+		sources/WindowApp.cpp\
 		sources/GraphicsMath.cpp\
+		sources/Member.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

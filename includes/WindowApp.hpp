@@ -1,5 +1,5 @@
-#ifndef WINDOWSAPP_HPP
-# define WINDOWSAPP_HPP
+#ifndef WINDOWAPP_HPP
+# define WINDOWAPP_HPP
 
 # include <vector>
 # include <sstream>
