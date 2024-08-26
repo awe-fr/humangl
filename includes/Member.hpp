@@ -10,6 +10,9 @@ class Member {
 		Member *_previous;
 		Member *_next;
 		float _length;
+		vec3 _degreeLock;
+
+		mat4 _model;
 		vec3 _degree;
 
 		GLfloat *_vertex;
@@ -23,9 +26,11 @@ class Member {
 		~Member();
 		void addNext(Member *n);
 		void addPrevious(Member *p);
+		void setDegree(float x, float y, float z);
 		GLuint getVAO();
 		GLuint getVBO();
 		GLuint getIBO();
+		mat4 getModel();
 };
 
 #endif

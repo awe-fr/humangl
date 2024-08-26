@@ -5,6 +5,9 @@ Member::Member(std::string name, float length) {
 	this->_previous = nullptr;
 	this->_name = name;
 	this->_length = length;
+	this->_degreeLock.x = 0; this->_degreeLock.y = 0; this->_degreeLock.z = 0;
+
+	this->_model = identityMat(1);
 	this->_degree.x = 0; this->_degree.y = 0; this->_degree.z = 0;
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
@@ -56,6 +59,18 @@ Member::~Member() {
 	delete[] this->_index;
 }
 
+void Member::setDegree(float x, float y, float z) {
+	if (this->_degree.x != x || this->_degree.y != y || this->_degree.z != z){
+		this->_degree.x = x;
+		this->_degree.y = y;
+		this->_degree.z = z;
+
+		this->_model = rotationMatX(this->_degree.x);
+		this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
+		this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
+	}
+}
+
 void Member::addNext(Member *n) {
 	this->_next = n;
 }
@@ -74,4 +89,8 @@ GLuint Member::getVBO() {
 
 GLuint Member::getIBO() {
 	return (this->_ibo);
+}
+
+mat4 Member::getModel() {
+	return (this->_model);
 }

@@ -30,13 +30,10 @@ int main(void) {
 
 		app->computeMovement();
 
-		mat4 model = matMult(rotationMatZ(ref1), translationMat(0, 0.0f, 0));
-		ref1 += 0.055;
-		ref2 -= 0.010;
-		ref3 -= 0.040;
-		ref4 += 0.070;
+		test1->setDegree(24, 56, ref1);
+		ref1+= 0.0055;
 		
-		mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), model));
+		mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), test1->getModel()));
 
 		float temp[16];
 		populateMat(temp, MVP);
