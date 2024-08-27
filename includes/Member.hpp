@@ -8,11 +8,9 @@ class Member {
 	private:
 		std::string _name;
 		Member *_previous;
-		// Member *_next;
 		vec3 _degreeLock;
 		float _length;
 
-		std::vector<vec3> _degreeStack;
 		vec3 _degree;
 		mat4 _model;
 
@@ -25,13 +23,9 @@ class Member {
 	public:
 		Member(std::string name, float length);
 		~Member();
-		// void addNext(Member *n);
-		void addPrevious(Member *p);
-		void setDegree(float x, float y, float z);
-		void setHistory();
 		void computeTravel();
-		void printHistory(); //to delete
-		void clearStack(); //to delete
+		void setPrevious(Member *p);
+		void setDegree(float x, float y, float z);
 		GLuint getVAO();
 		GLuint getVBO();
 		GLuint getIBO();

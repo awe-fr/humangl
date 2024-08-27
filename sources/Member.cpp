@@ -65,15 +65,6 @@ void Member::setDegree(float x, float y, float z) {
 	this->_degree.z = z;
 }
 
-void Member::setHistory() {
-	Member *temp = this;
-	this->_degreeStack.push_back(temp->_degree);
-	while(temp->_previous != nullptr) {
-		temp = temp->_previous;
-		this->_degreeStack.push_back(temp->_degree);
-	}
-}
-
 void Member::computeTravel() {
 	this->_model = identityMat(1);
 	if (this->_previous != nullptr) {
@@ -85,21 +76,7 @@ void Member::computeTravel() {
 	this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
 }
 
-void Member::printHistory() {
-	for(int i = 0; i < this->_degreeStack.size(); i++) {
-		std::cout << this->_name << " : " << this->_degreeStack[i].x << ", " << this->_degreeStack[i].y << ", " << this->_degreeStack[i].z << std::endl;
-	}
-}
-
-void Member::clearStack() {
-	this->_degreeStack.clear();
-}
-
-// void Member::addNext(Member *n) {
-// 	this->_next = n;
-// }
-
-void Member::addPrevious(Member *p) {
+void Member::setPrevious(Member *p) {
 	this->_previous = p;
 }
 

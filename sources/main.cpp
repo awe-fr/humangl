@@ -8,8 +8,8 @@ int main(void) {
 	Member *test2 = new Member("test2", 1);
 	Member *test3 = new Member("test3", 1);
 	
-	test2->addPrevious(test1);
-	test3->addPrevious(test2);
+	test2->setPrevious(test1);
+	test3->setPrevious(test2);
 
 	std::vector<Member *> objs;
 	objs.push_back(test1);
@@ -22,7 +22,6 @@ int main(void) {
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
 
 	float ref1 = 180;
 	float ref2 = 35;
@@ -37,24 +36,16 @@ int main(void) {
 		glUseProgram(app->getProgramID());
 
 		test1->setDegree(ref3, ref1, ref4);
+		test2->setDegree(45, 0, 60);
+		test3->setDegree(45, 60, 0);
+
 		ref3+= 0.005;
 		ref1+= 0.005;
 		ref4+= 0.005;
-		test2->setDegree(45, 0, 60);
-		test3->setDegree(45, 60, 0);
-		test1->setHistory();
-		test2->setHistory();
-		test3->setHistory();
+
 		test1->computeTravel();
 		test2->computeTravel();
 		test3->computeTravel();
-		std::cout << "------------" << std::endl;
-		test1->printHistory();
-		std::cout << "------------" << std::endl;
-		test2->printHistory();
-		test1->clearStack();
-		test2->clearStack();
-		test3->clearStack();
 
 		for (int i = 0; i < objs.size(); i++) {
 			glBindVertexArray(objs[i]->getVAO());
@@ -75,7 +66,6 @@ int main(void) {
 			glDisableVertexAttribArray(0);
 		}
 	}
-	delete test1;
 	delete app;
 	return (0);
 }
