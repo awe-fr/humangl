@@ -1,7 +1,7 @@
 #include "./../includes/Member.hpp"
 
 Member::Member(std::string name, float length) {
-	this->_next = nullptr;
+	// this->_next = nullptr;
 	this->_previous = nullptr;
 	this->_name = name;
 	this->_length = length;
@@ -11,12 +11,12 @@ Member::Member(std::string name, float length) {
 	this->_degree.x = 0; this->_degree.y = 0; this->_degree.z = 0;
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
-	this->_vertex[0] = 0.05f;   this->_vertex[1] = length;  this->_vertex[2] = 0.05f;
-	this->_vertex[3] = -0.05f;  this->_vertex[4] = length;  this->_vertex[5] = -0.05f;
-	this->_vertex[6] = -0.05f;  this->_vertex[7] = length;  this->_vertex[8] = 0.05f;
+	this->_vertex[0] = 0.0f;    this->_vertex[1] = length;  this->_vertex[2] = 0.0f;
+	this->_vertex[3] = -0.0f;   this->_vertex[4] = length;  this->_vertex[5] = -0.0f;
+	this->_vertex[6] = -0.0f;   this->_vertex[7] = length;  this->_vertex[8] = 0.0f;
 	this->_vertex[9] = 0.05f;   this->_vertex[10] = 0;      this->_vertex[11] = -0.05f;
 	this->_vertex[12] = -0.05f; this->_vertex[13] = 0;      this->_vertex[14] = -0.05f;
-	this->_vertex[15] = 0.05f;  this->_vertex[16] = length; this->_vertex[17] = -0.05f;
+	this->_vertex[15] = 0.0f;   this->_vertex[16] = length; this->_vertex[17] = -0.0f;
 	this->_vertex[18] = 0.05f;  this->_vertex[19] = 0;      this->_vertex[20] = 0.05f;
 	this->_vertex[21] = -0.05f; this->_vertex[22] = 0;      this->_vertex[23] = 0.05f;
 
@@ -60,20 +60,49 @@ Member::~Member() {
 }
 
 void Member::setDegree(float x, float y, float z) {
-	if (this->_degree.x != x || this->_degree.y != y || this->_degree.z != z){
-		this->_degree.x = x;
-		this->_degree.y = y;
-		this->_degree.z = z;
+	this->_degree.x = x;
+	this->_degree.y = y;
+	this->_degree.z = z;
+}
 
-		this->_model = rotationMatX(this->_degree.x);
-		this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
-		this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
+void Member::setHistory() {
+	Member *temp = this;
+	this->_degreeStack.push_back(temp->_degree);
+	while(temp->_previous != nullptr) {
+		temp = temp->_previous;
+		this->_degreeStack.push_back(temp->_degree);
 	}
 }
 
-void Member::addNext(Member *n) {
-	this->_next = n;
+void Member::computeTravel() {
+	this->_model = identityMat(1);
+    if (this->_previous != nullptr) {
+        this->_model = this->_previous->_model;
+    	this->_model = matMult(this->_model, translationMat(0, 1, 0));
+    }
+
+    // Appliquer la translation pour positionner le mollet au bout de la cuisse
+    // Translating along the Y-axis by the length of the cuisse
+
+    // Appliquer les rotations locales du mollet (dans l'ordre X, Y, Z)
+    this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
+    this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
+    this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
 }
+
+void Member::printHistory() {
+	for(int i = 0; i < this->_degreeStack.size(); i++) {
+		std::cout << this->_name << " : " << this->_degreeStack[i].x << ", " << this->_degreeStack[i].y << ", " << this->_degreeStack[i].z << std::endl;
+	}
+}
+
+void Member::clearStack() {
+	this->_degreeStack.clear();
+}
+
+// void Member::addNext(Member *n) {
+// 	this->_next = n;
+// }
 
 void Member::addPrevious(Member *p) {
 	this->_previous = p;
