@@ -76,18 +76,13 @@ void Member::setHistory() {
 
 void Member::computeTravel() {
 	this->_model = identityMat(1);
-    if (this->_previous != nullptr) {
-        this->_model = this->_previous->_model;
-    	this->_model = matMult(this->_model, translationMat(0, 1, 0));
-    }
-
-    // Appliquer la translation pour positionner le mollet au bout de la cuisse
-    // Translating along the Y-axis by the length of the cuisse
-
-    // Appliquer les rotations locales du mollet (dans l'ordre X, Y, Z)
-    this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
-    this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
-    this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
+	if (this->_previous != nullptr) {
+		this->_model = this->_previous->_model;
+		this->_model = matMult(this->_model, translationMat(0, 1, 0));
+	}
+	this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
+	this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
+	this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
 }
 
 void Member::printHistory() {
