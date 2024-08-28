@@ -11,11 +11,6 @@ int main(void) {
 	test2->setPrevious(test1);
 	test3->setPrevious(test2);
 
-	std::vector<Member *> objs;
-	objs.push_back(test1);
-	objs.push_back(test2);
-	objs.push_back(test3);
-
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
@@ -29,6 +24,9 @@ int main(void) {
 	float ref4 = 90;
 
 	float mvpPopulated[16];
+
+	MemberList *inst = MemberList::getInstance();
+	std::vector<Member *> lst = inst->getList();
 	while(app->isClosed() != true) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,12 +45,12 @@ int main(void) {
 		test2->computeTravel();
 		test3->computeTravel();
 
-		for (int i = 0; i < objs.size(); i++) {
-			glBindVertexArray(objs[i]->getVAO());
-			glBindBuffer(GL_ARRAY_BUFFER, objs[i]->getVBO());
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objs[i]->getIBO());
+		for (int i = 0; i < lst.size(); i++) {
+			glBindVertexArray(lst[i]->getVAO());
+			glBindBuffer(GL_ARRAY_BUFFER, lst[i]->getVBO());
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lst[i]->getIBO());
 
-			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), objs[i]->getModel()));
+			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), lst[i]->getModel()));
 
 			populateMat(mvpPopulated, MVP);
 
@@ -66,6 +64,8 @@ int main(void) {
 			glDisableVertexAttribArray(0);
 		}
 	}
+	inst->cleanup();
+	inst->deleteInstance();
 	delete app;
 	return (0);
 }

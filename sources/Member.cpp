@@ -1,7 +1,6 @@
 #include "./../includes/Member.hpp"
 
 Member::Member(std::string name, float length) {
-	// this->_next = nullptr;
 	this->_previous = nullptr;
 	this->_name = name;
 	this->_length = length;
@@ -48,6 +47,9 @@ Member::Member(std::string name, float length) {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	MemberList *lst = MemberList::getInstance();
+	lst->add(this);
 }
 
 Member::~Member() {
@@ -94,4 +96,8 @@ GLuint Member::getIBO() {
 
 mat4 Member::getModel() {
 	return (this->_model);
+}
+
+std::string Member::getName() {
+	return (this->_name);
 }

@@ -2,6 +2,7 @@
 # define MEMBER_HPP
 
 # include "./WindowApp.hpp"
+# include "./Singleton.hpp"
 # include "./GraphicsMath.h"
 
 class Member {
@@ -30,6 +31,7 @@ class Member {
 		GLuint getVBO();
 		GLuint getIBO();
 		mat4 getModel();
+		std::string getName();
 };
 
 #endif
