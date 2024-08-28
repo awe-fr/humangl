@@ -71,7 +71,7 @@ void Member::computeTravel() {
 	this->_model = identityMat(1);
 	if (this->_previous != nullptr) {
 		this->_model = this->_previous->_model;
-		this->_model = matMult(this->_model, translationMat(0, 1, 0));
+		this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 	}
 	this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
 	this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
