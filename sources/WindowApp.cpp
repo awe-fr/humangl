@@ -1,59 +1,70 @@
 #include "./../includes/WindowApp.hpp"
 
 WindowsApp::WindowsApp() {
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW." << std::endl;
-        exit(1);
-    }
-    glfwWindowHint(GLFW_SAMPLES, 4); // antialiasing
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	if (!glfwInit()) {
+		std::cerr << "Failed to initialize GLFW." << std::endl;
+		exit(1);
+	}
+	glfwWindowHint(GLFW_SAMPLES, 4); // antialiasing
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    this->_window = glfwCreateWindow(WIDTH, HEIGHT, "humangl", NULL, NULL);
-    if (this->_window == NULL) {
-        std::cerr << "Failed to open GLFW window." << std::endl;
-        glfwTerminate();
-        exit(1);
-    }
-    glfwMakeContextCurrent(this->_window);
-    glfwSwapInterval(0);
-    glewExperimental = true;
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "Failed to initialize GLEW" << std::endl;
-        glfwTerminate();
-        exit(1);
-    }
+	this->_window = glfwCreateWindow(WIDTH, HEIGHT, "HumanGL", NULL, NULL);
+	if (this->_window == NULL) {
+		std::cerr << "Failed to open GLFW window." << std::endl;
+		glfwTerminate();
+		exit(1);
+	}
+	glfwMakeContextCurrent(this->_window);
+	glfwSwapInterval(0);
+	glewExperimental = true;
+	if (glewInit() != GLEW_OK) {
+		std::cerr << "Failed to initialize GLEW" << std::endl;
+		glfwTerminate();
+		exit(1);
+	}
 
-    glfwSetInputMode(this->_window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(this->_window, GLFW_STICKY_KEYS, GL_TRUE);
 
-    this->_programID = loadShaders( "./shaders/shader.vert", "./shaders/shader.frag" );
+	this->_programID = loadShaders( "./shaders/shader.vert", "./shaders/shader.frag" );
 
-    this->_projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+	this->_projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO &io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(this->_window, true);
+	ImGui_ImplOpenGL3_Init("#version 430");
 }
 
 WindowsApp::~WindowsApp() {
-    glfwTerminate();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwTerminate();
 }
 
 bool WindowsApp::isClosed() {
-    if (glfwGetKey(this->_window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(this->_window) != 0) {
-        return (true);
-    }
-    glfwSwapBuffers(this->_window);
-    glfwPollEvents();
-    return (false);
+	if (glfwGetKey(this->_window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(this->_window) != 0) {
+		return (true);
+	}
+	glfwSwapBuffers(this->_window);
+	glfwPollEvents();
+	return (false);
 }
 
 GLFWwindow *WindowsApp::getWindow() {
-    return (this->_window);
+	return (this->_window);
 }
 
 void WindowsApp::computeMovement() {
-    deltaTime();
+	deltaTime();
 
-    static vec3 position{0.0f, 0.0f, 5.0f};
+	static vec3 position{0.0f, 0.0f, 5.0f};
 	static float horizontalAngle = M_PI;
 	static float verticalAngle = 0.0f;
 	static float speed = 3.0f;
@@ -217,17 +228,17 @@ void WindowsApp::deltaTime(void) {
 }
 
 double WindowsApp::getDeltaTime() {
-    return (this->_deltaTime);
+	return (this->_deltaTime);
 }
 
 mat4 WindowsApp::getView() {
-    return (this->_view);
+	return (this->_view);
 }
 
 mat4 WindowsApp::getProjection() {
-    return (this->_projection);
+	return (this->_projection);
 }
 
 GLuint WindowsApp::getProgramID() {
-    return (this->_programID);
+	return (this->_programID);
 }

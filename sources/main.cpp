@@ -30,6 +30,11 @@ int main(void) {
 	while(app->isClosed() != true) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
 		app->computeMovement();
 		glUseProgram(app->getProgramID());
 
@@ -63,6 +68,13 @@ int main(void) {
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 			glDisableVertexAttribArray(0);
 		}
+
+		ImGui::Begin("HumanGL settings");
+		ImGui::Text("test");
+		ImGui::End();
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 	inst->cleanup();
 	inst->deleteInstance();
