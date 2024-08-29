@@ -36,6 +36,7 @@ clean:
 			
 fclean:		clean
 			$(RM) $(NAME)
+			$(RM) imgui.ini
 			
 re:			fclean all
 
