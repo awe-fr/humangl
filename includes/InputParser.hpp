@@ -6,6 +6,8 @@
 # include <iostream>
 # include <vector>
 # include <algorithm>
+# include <stdlib.h>
+# include <map>
 
 # include "./../includes/GraphicsMath.h"
 
@@ -34,6 +36,22 @@ typedef struct s_RootDefinition
 	vec3						orientation;
 }	RootDefinition;
 
+typedef struct s_Limit
+{
+	float	min;
+	float	max;
+}	Limit;
+
+typedef struct s_BoneDefinition
+{
+	std::string						name;
+	vec3							direction;
+	float							length;
+	vec3							axis;
+	std::map<std::string, Limit>	dof;
+
+}	BoneDefinition;
+
 class InputParser
 {
 	private:
@@ -42,12 +60,17 @@ class InputParser
 		std::ifstream	_asf_file;
 		std::ifstream	_amc_file;
 
-		RootDefinition	_root_definition;
+		RootDefinition							_root_definition;
+		std::map<std::string, BoneDefinition>	_bonedata;
 
 		bool	parseAsfRoot(size_t &nb_line);
 		bool	parseAsfRootOrder(std::string &line, size_t &nb_line);
 		bool	parseAsfRootAxis(std::string &line, size_t &nb_line);
 		bool	parseAsfRootPosition(std::string &line, size_t &nb_line);
+		bool	parseAsfRootOrientation(std::string &line, size_t &nb_line);
+
+		bool	parseAsfBonedata(size_t &nb_line);
+		bool	parseAsfBone(size_t &nb_line);
 
 	public:
 		InputParser(std::string asf_path, std::string amc_path);

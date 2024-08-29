@@ -4,6 +4,7 @@ SRCS = sources/main.cpp\
 		sources/WindowApp.cpp\
 		sources/GraphicsMath.cpp\
 		sources/Member.cpp\
+		sources/InputParser.cpp\
 		imgui/imgui.cpp\
 		imgui/imgui_demo.cpp\
 		imgui/imgui_draw.cpp\
@@ -16,7 +17,7 @@ OBJS = $(SRCS:.cpp=.o)
 
 CC = c++
 
-CFLAGS = #-Wall -Wextra -Werror -g
+CFLAGS = -g
 
 LDFLAGS = -Iinclude -Llib -lglfw -lGLEW -lGL -lX11 -lpthread -lXrandr -lXi -ldl -D GLEW_STATIC
 
