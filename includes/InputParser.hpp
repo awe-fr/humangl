@@ -6,6 +6,7 @@
 # include <iostream>
 # include <vector>
 # include <algorithm>
+# include <stdlib.h>
 
 # include "./../includes/GraphicsMath.h"
 
@@ -48,6 +49,7 @@ class InputParser
 		bool	parseAsfRootOrder(std::string &line, size_t &nb_line);
 		bool	parseAsfRootAxis(std::string &line, size_t &nb_line);
 		bool	parseAsfRootPosition(std::string &line, size_t &nb_line);
+		bool	parseAsfRootOrientation(std::string &line, size_t &nb_line);
 
 	public:
 		InputParser(std::string asf_path, std::string amc_path);

@@ -10,7 +10,7 @@ static void trim(std::string &line)
 {
 	size_t i = 0;
 
-	while (i != line.size() && (line[i] == ' ' || line[i] == '\t' || line[i] == '\n'))
+	while (i != line.size() && (line[i] == ' ' || line[i] == '\t' || line[i] == '\n' || line[i] == '\r'))
 		i++;
 
 	line = line.substr(i);
@@ -27,7 +27,7 @@ static std::string parseKey(std::string &line)
 	if (line[0] == ':')
 		i = 1;
 
-	while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+	while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n' && line[i] != '\r')
 	{
 		key += line[i];
 		i++;
@@ -54,7 +54,7 @@ bool InputParser::parseAsfRootOrder(std::string &line, size_t &nb_line)
 		std::string str;
 		size_t i = 0;
 
-		while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+		while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n' && line[i] != '\r')
 		{
 			str += line[i];
 			i++;
@@ -88,7 +88,7 @@ bool InputParser::parseAsfRootAxis(std::string &line, size_t &nb_line)
 		return false;
 	}
 
-	while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+	while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n' && line[i] != '\r')
 	{
 		str += line[i];
 		i++;
@@ -110,7 +110,94 @@ bool InputParser::parseAsfRootAxis(std::string &line, size_t &nb_line)
 
 bool InputParser::parseAsfRootPosition(std::string &line, size_t &nb_line)
 {
+	size_t i = 0;
 
+	trim(line);
+	while (line.size() > 0 && i < 3)
+	{
+		std::string str;
+		size_t j = 0;
+		while (j != line.size() &&  line[j] != ' ' && line[j] != '\t' && line[j] != '\n' && line[j] != '\r')
+		{
+			str += line[j];
+			j++;
+		}
+
+		switch (this->_root_definition.axis[i])
+		{
+			case 'X':
+				this->_root_definition.position.x = (float)atof(str.c_str());
+				break;
+
+			case 'Y':
+				this->_root_definition.position.y = (float)atof(str.c_str());
+				break;
+			
+			case 'Z':
+				this->_root_definition.position.z = (float)atof(str.c_str());
+
+			default:
+				break;
+		}
+
+		line = line.substr(j);
+		trim(line);
+		i++;
+	}
+
+	if (line.size() > 0 || i < 3)
+	{
+		std::cerr << "ASF input file error: line " << nb_line << ": invalid root position." << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+bool InputParser::parseAsfRootOrientation(std::string &line, size_t &nb_line)
+{
+	size_t i = 0;
+
+	trim(line);
+	while (line.size() > 0 && i < 3)
+	{
+		std::string str;
+		size_t j = 0;
+		while (j != line.size() &&  line[j] != ' ' && line[j] != '\t' && line[j] != '\n' && line[j] != '\r')
+		{
+			str += line[j];
+			j++;
+		}
+
+		switch (this->_root_definition.axis[i])
+		{
+			case 'X':
+				this->_root_definition.orientation.x = (float)atof(str.c_str());
+				break;
+
+			case 'Y':
+				this->_root_definition.orientation.y = (float)atof(str.c_str());
+				break;
+			
+			case 'Z':
+				this->_root_definition.orientation.z = (float)atof(str.c_str());
+
+			default:
+				break;
+		}
+
+		line = line.substr(j);
+		trim(line);
+		i++;
+	}
+
+	if (line.size() > 0 || i < 3)
+	{
+		std::cerr << "ASF input file error: line " << nb_line << ": invalid root orientation." << std::endl;
+		return false;
+	}
+
+	return true;
 }
 
 bool InputParser::parseAsfRoot(size_t &nb_line)
@@ -147,6 +234,8 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 			}
 			if (!this->parseAsfRootOrder(line, nb_line))
 				return false;
+
+			is_order_parsed = true;
 		}
 		else if (key == ASF_KEY_ROOT_AXIS)
 		{
@@ -157,6 +246,8 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 			}
 			if (!this->parseAsfRootAxis(line, nb_line))
 				return false;
+
+			is_axis_parsed = true;
 		}
 		else if (key == ASF_KEY_ROOT_POSITION)
 		{
@@ -165,11 +256,38 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for root position." << std::endl;
 				return false;
 			}
+			if (!is_axis_parsed)
+			{
+				std::cerr << "ASF input file error: line " << nb_line << ": root axis should be defined before root position." << std::endl;
+				return false;
+			}
 			if (!this->parseAsfRootPosition(line, nb_line))
 				return false;
+
+			is_position_parsed = true;
+		}
+		else if (key == ASF_KEY_ROOT_ORIENTATION)
+		{
+			if (is_orientation_parsed)
+			{
+				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for root orientation." << std::endl;
+				return false;
+			}
+			if (!is_axis_parsed)
+			{
+				std::cerr << "ASF input file error: line " << nb_line << ": root axis should be defined before root orientation." << std::endl;
+				return false;
+			}
+			if (!this->parseAsfRootOrientation(line, nb_line))
+				return false;
+
+			is_orientation_parsed = true;
 		}
 
 		nb_line++;
+
+		if (is_order_parsed && is_axis_parsed && is_position_parsed && is_orientation_parsed)
+			break;
 	}
 
 	return true;
@@ -219,9 +337,12 @@ bool InputParser::parseAsf(void)
 					this->_asf_file.close();
 					return false;
 				}
+
 				is_root_definition_parsed = true;
 			}
 		}
+
+		nb_line++;
 	}
 
 	return true;
