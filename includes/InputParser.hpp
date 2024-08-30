@@ -71,6 +71,8 @@ class InputParser
 
 		bool	parseAsfBonedata(size_t &nb_line);
 		bool	parseAsfBone(size_t &nb_line);
+		bool	parseAsfBoneName(std::string &line, size_t &nb_line, std::string &name);
+		bool	parseAsfBoneLimits(std::string &line, size_t &nb_line, size_t dof_size, std::vector<Limit> &limits);
 
 	public:
 		InputParser(std::string asf_path, std::string amc_path);
