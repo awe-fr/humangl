@@ -39,5 +39,6 @@ vec3 vecNormalize(vec3 f);
 vec3 vecMultiplication(vec3 f, float s);
 vec3 vecAddition(vec3 f, vec3 s);
 vec3 vecSubstract(vec3 f, vec3 s);
+void populateVec4(float buf[4], vec4 v);
 
 #endif

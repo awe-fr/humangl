@@ -186,3 +186,10 @@ vec3 vecSubstract(vec3 f, vec3 s) {
 	f.z -= s.z;
 	return (f);
 }
+
+void populateVec4(float buf[4], vec4 v) {
+	buf[0] = v.x;
+	buf[1] = v.y;
+	buf[2] = v.z;
+	buf[3] = v.w;
+}
