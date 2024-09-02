@@ -37,6 +37,7 @@ class Member {
 		GLuint getIBO();
 		mat4 getModel();
 		std::string getName();
+		void printName();
 };
 
 #endif

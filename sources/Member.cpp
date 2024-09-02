@@ -6,12 +6,12 @@ Member::Member(std::string name, vec3 direction, float length, vec3 degree, std:
 	this->_model = identityMat(1);
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
-	this->_vertex[0] = 0.0f;    this->_vertex[1] = length;  this->_vertex[2] = 0.0f;
-	this->_vertex[3] = -0.0f;   this->_vertex[4] = length;  this->_vertex[5] = -0.0f;
-	this->_vertex[6] = -0.0f;   this->_vertex[7] = length;  this->_vertex[8] = 0.0f;
+	this->_vertex[0] = 0.01f;    this->_vertex[1] = length;  this->_vertex[2] = 0.01f;
+	this->_vertex[3] = -0.01f;   this->_vertex[4] = length;  this->_vertex[5] = -0.01f;
+	this->_vertex[6] = -0.01f;   this->_vertex[7] = length;  this->_vertex[8] = 0.01f;
 	this->_vertex[9] = 0.05f;   this->_vertex[10] = 0;      this->_vertex[11] = -0.05f;
 	this->_vertex[12] = -0.05f; this->_vertex[13] = 0;      this->_vertex[14] = -0.05f;
-	this->_vertex[15] = 0.0f;   this->_vertex[16] = length; this->_vertex[17] = -0.0f;
+	this->_vertex[15] = 0.01f;   this->_vertex[16] = length; this->_vertex[17] = -0.01f;
 	this->_vertex[18] = 0.05f;  this->_vertex[19] = 0;      this->_vertex[20] = 0.05f;
 	this->_vertex[21] = -0.05f; this->_vertex[22] = 0;      this->_vertex[23] = 0.05f;
 
@@ -66,6 +66,10 @@ void Member::computeTravel() {
 		this->_model = this->_previous->_model;
 		this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 	}
+	else if (this->_root != nullptr) {
+		this->_model = this->_root->getModel();
+		// this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
+	}
 	this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
 	this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
 	this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
@@ -93,4 +97,11 @@ mat4 Member::getModel() {
 
 std::string Member::getName() {
 	return (this->_name);
+}
+
+void Member::printName() {
+	if (this->_previous != nullptr)
+		std::cout << this->_name << " : " << this->_previous->_name << std::endl;
+	else
+		std::cout << this->_name << ": Root" << std::endl;
 }
