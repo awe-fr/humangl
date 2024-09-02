@@ -62,23 +62,26 @@ class InputParser
 
 		RootDefinition							_root_definition;
 		std::map<std::string, BoneDefinition>	_bonedata;
+		std::map<std::string, std::string>		_hierarchy;
 
-		bool	parseAsfRoot(size_t &nb_line);
-		bool	parseAsfRootOrder(std::string &line, size_t &nb_line);
-		bool	parseAsfRootAxis(std::string &line, size_t &nb_line);
-		bool	parseAsfRootPosition(std::string &line, size_t &nb_line);
-		bool	parseAsfRootOrientation(std::string &line, size_t &nb_line);
+		bool	parseASFRoot(size_t &nb_line);
+		bool	parseASFRootOrder(std::string &line, size_t &nb_line);
+		bool	parseASFRootAxis(std::string &line, size_t &nb_line);
+		bool	parseASFRootPosition(std::string &line, size_t &nb_line);
+		bool	parseASFRootOrientation(std::string &line, size_t &nb_line);
 
-		bool	parseAsfBonedata(size_t &nb_line);
-		bool	parseAsfBone(size_t &nb_line);
-		bool	parseAsfBoneName(std::string &line, size_t &nb_line, std::string &name);
-		bool	parseAsfBoneLimits(std::string &line, size_t &nb_line, size_t dof_size, std::vector<Limit> &limits);
+		bool	parseASFBonedata(size_t &nb_line, std::string &next_key);
+		bool	parseASFBone(size_t &nb_line);
+		bool	parseASFBoneName(std::string &line, size_t &nb_line, std::string &name);
+		bool	parseASFBoneLimits(std::string &line, size_t &nb_line, size_t dof_size, std::vector<Limit> &limits);
 
+		bool	parseASFHierarchy(size_t &nb_line);
+	
 	public:
 		InputParser(std::string asf_path, std::string amc_path);
 		~InputParser(void);
 
-		bool	parseAsf(void);
+		bool	parseASF(void);
 		bool	parseAmc(void);
 
 };

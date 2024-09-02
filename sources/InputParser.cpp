@@ -50,7 +50,7 @@ static bool checkXYZ(std::string str)
 
 
 
-bool InputParser::parseAsfRootOrder(std::string &line, size_t &nb_line)
+bool InputParser::parseASFRootOrder(std::string &line, size_t &nb_line)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -86,7 +86,7 @@ bool InputParser::parseAsfRootOrder(std::string &line, size_t &nb_line)
 	return true;
 }
 
-bool InputParser::parseAsfRootAxis(std::string &line, size_t &nb_line)
+bool InputParser::parseASFRootAxis(std::string &line, size_t &nb_line)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -123,7 +123,7 @@ bool InputParser::parseAsfRootAxis(std::string &line, size_t &nb_line)
 	return true;
 }
 
-bool InputParser::parseAsfRootPosition(std::string &line, size_t &nb_line)
+bool InputParser::parseASFRootPosition(std::string &line, size_t &nb_line)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -174,7 +174,7 @@ bool InputParser::parseAsfRootPosition(std::string &line, size_t &nb_line)
 	return true;
 }
 
-bool InputParser::parseAsfRootOrientation(std::string &line, size_t &nb_line)
+bool InputParser::parseASFRootOrientation(std::string &line, size_t &nb_line)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -225,7 +225,7 @@ bool InputParser::parseAsfRootOrientation(std::string &line, size_t &nb_line)
 	return true;
 }
 
-bool InputParser::parseAsfRoot(size_t &nb_line)
+bool InputParser::parseASFRoot(size_t &nb_line)
 {
 	std::string line;
 	bool is_order_parsed = false;
@@ -257,7 +257,7 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for root order." << std::endl;
 				return false;
 			}
-			if (!this->parseAsfRootOrder(line, nb_line))
+			if (!this->parseASFRootOrder(line, nb_line))
 				return false;
 
 			is_order_parsed = true;
@@ -269,7 +269,7 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for root axis." << std::endl;
 				return false;
 			}
-			if (!this->parseAsfRootAxis(line, nb_line))
+			if (!this->parseASFRootAxis(line, nb_line))
 				return false;
 
 			is_axis_parsed = true;
@@ -286,7 +286,7 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": root axis should be defined before root position." << std::endl;
 				return false;
 			}
-			if (!this->parseAsfRootPosition(line, nb_line))
+			if (!this->parseASFRootPosition(line, nb_line))
 				return false;
 
 			is_position_parsed = true;
@@ -303,7 +303,7 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": root axis should be defined before root orientation." << std::endl;
 				return false;
 			}
-			if (!this->parseAsfRootOrientation(line, nb_line))
+			if (!this->parseASFRootOrientation(line, nb_line))
 				return false;
 
 			is_orientation_parsed = true;
@@ -326,7 +326,7 @@ bool InputParser::parseAsfRoot(size_t &nb_line)
 
 
 
-bool InputParser::parseAsfBoneName(std::string &line, size_t &nb_line, std::string &name)
+bool InputParser::parseASFBoneName(std::string &line, size_t &nb_line, std::string &name)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -364,7 +364,7 @@ bool InputParser::parseAsfBoneName(std::string &line, size_t &nb_line, std::stri
 	return true;
 }
 
-static bool parseAsfBoneDirection(std::string &line, size_t &nb_line, vec3 &direction)
+static bool parseASFBoneDirection(std::string &line, size_t &nb_line, vec3 &direction)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -415,7 +415,7 @@ static bool parseAsfBoneDirection(std::string &line, size_t &nb_line, vec3 &dire
 	return true;
 }
 
-static bool parseAsfBoneLength(std::string &line, size_t &nb_line, float &length)
+static bool parseASFBoneLength(std::string &line, size_t &nb_line, float &length)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -447,7 +447,7 @@ static bool parseAsfBoneLength(std::string &line, size_t &nb_line, float &length
 	return true;
 }
 
-static bool parseAsfBoneAxis(std::string &line, size_t &nb_line, vec3 &axis)
+static bool parseASFBoneAxis(std::string &line, size_t &nb_line, vec3 &axis)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -535,7 +535,7 @@ static bool parseAsfBoneAxis(std::string &line, size_t &nb_line, vec3 &axis)
 	return true;
 }
 
-static bool parseAsfBoneDof(std::string &line, size_t &nb_line, std::vector<std::string> &dof)
+static bool parseASFBoneDof(std::string &line, size_t &nb_line, std::vector<std::string> &dof)
 {
 	trim(line);
 	if (line.size() == 0)
@@ -571,7 +571,7 @@ static bool parseAsfBoneDof(std::string &line, size_t &nb_line, std::vector<std:
 	return true;
 }
 
-static bool parseAsfBoneLimit(std::string &line, size_t &nb_line, Limit &limit)
+static bool parseASFBoneLimit(std::string &line, size_t &nb_line, Limit &limit)
 {
 	trim(line);
 
@@ -628,14 +628,14 @@ static bool parseAsfBoneLimit(std::string &line, size_t &nb_line, Limit &limit)
 	return true;
 }
 
-bool InputParser::parseAsfBoneLimits(std::string &line, size_t &nb_line, size_t dof_size, std::vector<Limit> &limits)
+bool InputParser::parseASFBoneLimits(std::string &line, size_t &nb_line, size_t dof_size, std::vector<Limit> &limits)
 {
 	Limit limit;
 
 	trim(line);
 	if (line.size() != 0)
 	{
-		if (!parseAsfBoneLimit(line, nb_line, limit))
+		if (!parseASFBoneLimit(line, nb_line, limit))
 			return false;
 		limits.push_back(limit);
 		dof_size--;
@@ -644,7 +644,7 @@ bool InputParser::parseAsfBoneLimits(std::string &line, size_t &nb_line, size_t 
 	nb_line++;
 	for (size_t i = 0; i < dof_size && std::getline(this->_asf_file, line); i++)
 	{
-		if (!parseAsfBoneLimit(line, nb_line, limit))
+		if (!parseASFBoneLimit(line, nb_line, limit))
 			return false;
 		limits.push_back(limit);
 
@@ -654,7 +654,7 @@ bool InputParser::parseAsfBoneLimits(std::string &line, size_t &nb_line, size_t 
 	return true;
 }
 
-bool InputParser::parseAsfBone(size_t &nb_line)
+bool InputParser::parseASFBone(size_t &nb_line)
 {
 	BoneDefinition bone;
 	std::vector<std::string> dof;
@@ -690,7 +690,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for bone name." << std::endl;
 				return false;
 			}
-			if (!parseAsfBoneName(line, nb_line, bone.name))
+			if (!parseASFBoneName(line, nb_line, bone.name))
 				return false;
 
 			is_name_parsed = true;
@@ -702,7 +702,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for bone direction." << std::endl;
 				return false;
 			}
-			if (!parseAsfBoneDirection(line, nb_line, bone.direction))
+			if (!parseASFBoneDirection(line, nb_line, bone.direction))
 				return false;
 
 			is_direction_parsed = true;
@@ -714,7 +714,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for bone length." << std::endl;
 				return false;
 			}
-			if (!parseAsfBoneLength(line, nb_line, bone.length))
+			if (!parseASFBoneLength(line, nb_line, bone.length))
 				return false;
 
 			is_length_parsed = true;
@@ -726,7 +726,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for bone axis." << std::endl;
 				return false;
 			}
-			if (!parseAsfBoneAxis(line, nb_line, bone.axis))
+			if (!parseASFBoneAxis(line, nb_line, bone.axis))
 				return false;
 
 			is_axis_parsed = true;
@@ -738,7 +738,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": multiple definitions for bone dof." << std::endl;
 				return false;
 			}
-			if (!parseAsfBoneDof(line, nb_line, dof))
+			if (!parseASFBoneDof(line, nb_line, dof))
 				return false;
 
 			is_dof_parsed = true;
@@ -755,7 +755,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 				std::cerr << "ASF input file error: line " << nb_line << ": invalid bone: found field 'limits' but missing field 'dof'." << std::endl;
 				return false;
 			}
-			if (!parseAsfBoneLimits(line, nb_line, dof.size(), limits))
+			if (!parseASFBoneLimits(line, nb_line, dof.size(), limits))
 				return false;
 
 			is_limits_parsed = true;
@@ -805,7 +805,7 @@ bool InputParser::parseAsfBone(size_t &nb_line)
 	return true;
 }
 
-bool InputParser::parseAsfBonedata(size_t &nb_line)
+bool InputParser::parseASFBonedata(size_t &nb_line, std::string &next_key)
 {
 	std::string line;
 
@@ -820,13 +820,21 @@ bool InputParser::parseAsfBonedata(size_t &nb_line)
 		}
 
 		if (line[0] == ':')
+		{
+			next_key = parseKey(line);
 			break;
+		}
 
 		std::string key = parseKey(line);
 		if (key == ASF_KEY_BEGIN)
 		{
-			if (!this->parseAsfBone(nb_line))
+			if (!this->parseASFBone(nb_line))
 				return false;
+		}
+		else
+		{
+			std::cerr << "ASF input file error: line " << nb_line << "unknown key '" << key << "'." << std::endl;
+			return false;
 		}
 	}
 
@@ -835,7 +843,70 @@ bool InputParser::parseAsfBonedata(size_t &nb_line)
 
 
 
-bool InputParser::parseAsf(void)
+bool InputParser::parseASFHierarchy(size_t &nb_line)
+{
+	std::string line;
+
+	nb_line++;
+	while (std::getline(this->_asf_file, line))
+	{
+		trim(line);
+		if (line.size() == 0)
+		{
+			nb_line++;
+			continue;
+		}
+
+		if (line[0] == ':')
+		{
+			std::cerr << "ASF input file error: line " << nb_line << ": missing 'end' key for hierarchy." << std::endl;
+			return false;
+		}
+
+		std::string key = parseKey(line);
+		if (key == ASF_KEY_BEGIN)
+		{
+			nb_line++;
+			continue;
+		}
+		else if (key == ASF_KEY_END)
+			break;
+		else if (key != ASF_KEY_ROOT && this->_bonedata.find(key) == this->_bonedata.end())
+		{
+			std::cerr << "ASF input file error: line " << nb_line << ": unknown bone '" << key << "'." << std::endl;
+			return false;
+		}
+		else
+		{
+			trim(line);
+			while(line.size() != 0)
+			{
+				std::string next = parseKey(line);
+				if ( this->_bonedata.find(next) == this->_bonedata.end())
+				{
+					std::cerr << "ASF input file error: line " << nb_line << ": unknown bone '" << next << "'." << std::endl;
+					return false;
+				}
+				if (this->_hierarchy.find(next) != this->_hierarchy.end())
+				{
+					std::cerr << "ASF input file error: line " << nb_line << ": bone '" << next << "' already has a previous bone." << std::endl;
+					return false;
+				}
+				
+				std::pair<std::string, std::string> pair(next, key);
+				this->_hierarchy.insert(pair);
+				trim(line);
+			}
+		}
+		nb_line++;
+	}
+
+	return true;
+}
+
+
+
+bool InputParser::parseASF(void)
 {
 	this->_asf_file.open(this->_asf_path);
 
@@ -850,6 +921,7 @@ bool InputParser::parseAsf(void)
 	bool is_hierarchy_parsed = false;
 
 	std::string line;
+	std::string next_key;
 	size_t nb_line = 1;
 
 	while (std::getline(this->_asf_file, line))
@@ -872,7 +944,7 @@ bool InputParser::parseAsf(void)
 					this->_asf_file.close();
 					return false;
 				}
-				if (!this->parseAsfRoot(nb_line))
+				if (!this->parseASFRoot(nb_line))
 				{
 					this->_asf_file.close();
 					return false;
@@ -888,17 +960,59 @@ bool InputParser::parseAsf(void)
 					this->_asf_file.close();
 					return false;
 				}
-				if (!this->parseAsfBonedata(nb_line))
+				if (!this->parseASFBonedata(nb_line, next_key))
+				{
+					this->_asf_file.close();
+					return false;
+				}
+				if (next_key.size() != 0)
+					key = next_key;
+
+				is_bonedata_parsed = true;
+			}
+			if (key == ASF_KEY_HIERARCHY)
+			{
+				if (is_hierarchy_parsed)
+				{
+					std::cerr << "ASF input file error line " << nb_line << ": multiplie definitions for 'hierarchy'." << std::endl;
+					this->_asf_file.close();
+					return false;
+				}
+				if (!is_bonedata_parsed)
+				{
+					std::cerr << "ASF input file error line " << nb_line << ": found field 'hierarchy' but missing field 'bonedata'." << std::endl;
+					return false;
+				}
+				if (!this->parseASFHierarchy(nb_line))
 				{
 					this->_asf_file.close();
 					return false;
 				}
 
-				is_bonedata_parsed = true;
+				is_hierarchy_parsed = true;
 			}
 		}
 
 		nb_line++;
+
+		if (is_root_definition_parsed && is_bonedata_parsed && is_hierarchy_parsed)
+			break;
+	}
+
+	if (!is_root_definition_parsed)
+	{
+		std::cerr << "ASF input file error: missing root definition." << std::endl;
+		return false;
+	}
+	if (!is_bonedata_parsed)
+	{
+		std::cerr << "ASF input file error: missing bonedata definition." << std::endl;
+		return false;
+	}
+	if (!is_hierarchy_parsed)
+	{
+		std::cerr << "ASF input file error: missing hierarchy definition." << std::endl;
+		return false;
 	}
 
 	return true;

@@ -4,7 +4,7 @@
 
 int main(void) {
 	InputParser input_parser("animations/asf/02.asf", "animations/amc/walk.amc");
-	input_parser.parseAsf();
+	input_parser.parseASF();
 
 	WindowsApp *app = new WindowsApp();
 
