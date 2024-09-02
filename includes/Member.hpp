@@ -1,18 +1,23 @@
 #ifndef MEMBER_HPP
 # define MEMBER_HPP
 
-# include "./WindowApp.hpp"
-# include "./Singleton.hpp"
-# include "./GraphicsMath.h"
+# include <map>
+
+# include "WindowApp.hpp"
+# include "GraphicsMath.h"
+# include "Root.hpp"
+# include "InputParser.hpp"
 
 class Member {
 	private:
-		std::string _name;
-		Member *_previous;
-		vec3 _degreeLock;
-		float _length;
+		std::string						_name;
+		vec3							_direction;
+		float							_length;
+		vec3							_degree;
+		std::map<std::string, Limit>	_degreeLock;
+		Member *						_previous;
+		Root *							_root;
 
-		vec3 _degree;
 		mat4 _model;
 
 		GLfloat *_vertex;
@@ -22,7 +27,7 @@ class Member {
 		GLuint _vbo;
 		GLuint _ibo;
 	public:
-		Member(std::string name, float length);
+		Member(std::string name, vec3 direction, float length, vec3 degree, std::map<std::string, Limit> degree_lock, Member *previous, Root *root);
 		~Member();
 		void computeTravel();
 		void setPrevious(Member *p);

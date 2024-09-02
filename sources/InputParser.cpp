@@ -1,6 +1,8 @@
-#include "./../includes/InputParser.hpp"
+#include "../includes/InputParser.hpp"
+#include "../includes/Root.hpp"
+#include "../includes/Singleton.hpp"
 
-InputParser::InputParser(std::string asf_path, std::string amc_path) : _asf_path(asf_path), _amc_path(amc_path) {}
+InputParser::InputParser(std::string asf_path, std::string amc_path) : _asf_path(asf_path), _amc_path(amc_path), _root(nullptr) {}
 
 InputParser::~InputParser(void) {}
 
@@ -895,6 +897,7 @@ bool InputParser::parseASFHierarchy(size_t &nb_line)
 				
 				std::pair<std::string, std::string> pair(next, key);
 				this->_hierarchy.insert(pair);
+				this->_hierarchy_order.push_back(next);
 				trim(line);
 			}
 		}
@@ -1023,4 +1026,39 @@ bool InputParser::parseAmc(void)
 
 
 	return true;
+}
+
+
+
+void InputParser::buildRoot(void)
+{
+	if (this->_root != nullptr)
+		delete this->_root;
+	this->_root = new Root(this->_root_definition.order, this->_root_definition.position, this->_root_definition.orientation);
+}
+
+void InputParser::buildMembers(void)
+{
+	MemberList *lst = MemberList::getInstance();
+	this->buildRoot();
+
+	for (std::vector<std::string>::iterator it = this->_hierarchy_order.begin(); it != this->_hierarchy_order.end(); it++)
+	{
+		BoneDefinition def = this->_bonedata[*it];
+		std::string previous_name = this->_hierarchy[*it];
+		Member *previous = nullptr;
+		if (previous_name != ASF_KEY_ROOT)
+			previous = lst->findByName(previous_name);
+
+		Member *member = new Member(def.name, def.direction, def.length, def.axis, def.dof, previous, this->_root);
+
+		lst->add(member);
+	}
+}
+
+
+
+Root *InputParser::getRoot(void)
+{
+	return this->_root;
 }

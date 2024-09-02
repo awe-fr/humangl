@@ -1,21 +1,24 @@
-#include "./../includes/WindowApp.hpp"
-#include "./../includes/Member.hpp"
-#include "./../includes/InputParser.hpp"
+#include "../includes/WindowApp.hpp"
+#include "../includes/Member.hpp"
+#include "../includes/InputParser.hpp"
+#include "../includes/Singleton.hpp"
 
 int main(void) {
 	InputParser input_parser("animations/asf/02.asf", "animations/amc/walk.amc");
 	input_parser.parseASF();
 
 	WindowsApp *app = new WindowsApp();
+	input_parser.buildMembers();
 
-	Member *test1 = new Member("test1", 1);
-	Member *test2 = new Member("test2", 1);
-	Member *test3 = new Member("test3", 1);
+
+	// Member *test1 = new Member("test1", 1);
+	// Member *test2 = new Member("test2", 1);
+	// Member *test3 = new Member("test3", 1);
 
 	vec4 color; color.x = 0.33; color.y = 0.33; color.z = 0.33; color.w = 1;
 	
-	test2->setPrevious(test1);
-	test3->setPrevious(test2);
+	// test2->setPrevious(test1);
+	// test3->setPrevious(test2);
 
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -46,13 +49,16 @@ int main(void) {
 		app->computeMovement();
 		glUseProgram(app->getProgramID());
 
-		test1->setDegree(ref1, ref2, ref3);
-		test2->setDegree(45, 0, 60);
-		test3->setDegree(45, 60, 0);
+		// test1->setDegree(ref1, ref2, ref3);
+		// test2->setDegree(45, 0, 60);
+		// test3->setDegree(45, 60, 0);
 
-		test1->computeTravel();
-		test2->computeTravel();
-		test3->computeTravel();
+		// test1->computeTravel();
+		// test2->computeTravel();
+		// test3->computeTravel();
+
+		for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
+			(*it)->computeTravel();
 
 		for (int i = 0; i < lst.size(); i++) {
 			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), lst[i]->getModel()));

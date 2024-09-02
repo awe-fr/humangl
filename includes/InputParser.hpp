@@ -9,7 +9,7 @@
 # include <stdlib.h>
 # include <map>
 
-# include "./../includes/GraphicsMath.h"
+# include "GraphicsMath.h"
 
 # define ASF_KEY_ROOT "root"
 # define ASF_KEY_BONEDATA "bonedata"
@@ -27,6 +27,8 @@
 # define ASF_KEY_BONEDATA_AXIS "axis"
 # define ASF_KEY_BONEDATA_DOF "dof"
 # define ASF_KEY_BONEDATA_LIMITS "limits"
+
+class Root;
 
 typedef struct s_RootDefinition
 {
@@ -61,8 +63,10 @@ class InputParser
 		std::ifstream	_amc_file;
 
 		RootDefinition							_root_definition;
+		Root *									_root;
 		std::map<std::string, BoneDefinition>	_bonedata;
 		std::map<std::string, std::string>		_hierarchy;
+		std::vector<std::string>				_hierarchy_order;
 
 		bool	parseASFRoot(size_t &nb_line);
 		bool	parseASFRootOrder(std::string &line, size_t &nb_line);
@@ -76,6 +80,8 @@ class InputParser
 		bool	parseASFBoneLimits(std::string &line, size_t &nb_line, size_t dof_size, std::vector<Limit> &limits);
 
 		bool	parseASFHierarchy(size_t &nb_line);
+
+		void	buildRoot(void);
 	
 	public:
 		InputParser(std::string asf_path, std::string amc_path);
@@ -84,6 +90,9 @@ class InputParser
 		bool	parseASF(void);
 		bool	parseAmc(void);
 
+		void	buildMembers(void);
+
+		Root *	getRoot(void);
 };
 
 #endif

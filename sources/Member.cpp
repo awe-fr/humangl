@@ -1,13 +1,9 @@
-#include "./../includes/Member.hpp"
+#include "../includes/Member.hpp"
 
-Member::Member(std::string name, float length) {
-	this->_previous = nullptr;
-	this->_name = name;
-	this->_length = length;
-	this->_degreeLock.x = 0; this->_degreeLock.y = 0; this->_degreeLock.z = 0;
-
+Member::Member(std::string name, vec3 direction, float length, vec3 degree, std::map<std::string, Limit> degree_lock, Member *previous, Root *root) :
+				_name(name), _direction(direction), _length(length), _degree(degree), _degreeLock(degree_lock), _previous(previous), _root(root)
+{
 	this->_model = identityMat(1);
-	this->_degree.x = 0; this->_degree.y = 0; this->_degree.z = 0;
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
 	this->_vertex[0] = 0.0f;    this->_vertex[1] = length;  this->_vertex[2] = 0.0f;
@@ -47,9 +43,6 @@ Member::Member(std::string name, float length) {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	MemberList *lst = MemberList::getInstance();
-	lst->add(this);
 }
 
 Member::~Member() {

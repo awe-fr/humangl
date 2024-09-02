@@ -5,6 +5,7 @@ SRCS = sources/main.cpp\
 		sources/GraphicsMath.cpp\
 		sources/Member.cpp\
 		sources/InputParser.cpp\
+		sources/Root.cpp\
 		imgui/imgui.cpp\
 		imgui/imgui_demo.cpp\
 		imgui/imgui_draw.cpp\

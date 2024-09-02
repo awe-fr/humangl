@@ -3,9 +3,7 @@
 
 # include <mutex>
 
-# include "./Member.hpp"
-
-class Member;
+# include "Member.hpp"
 
 template <typename T>
 class Singleton {
@@ -70,6 +68,18 @@ class MemberList : public Singleton<MemberList>, public List<Member>{
 		MemberList& operator=(const MemberList&) = delete;
 
 		friend Singleton;
+
+	public:
+		Member *findByName(std::string name)
+		{
+			for (std::vector<Member *>::iterator it = this->_list.begin(); it != this->_list.end(); it++)
+			{
+				if ((*it)->getName() == name)
+					return *it;
+			}
+
+			return nullptr;
+		}
 };
 
 #endif
