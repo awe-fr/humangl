@@ -79,6 +79,21 @@ void Member::setPrevious(Member *p) {
 	this->_previous = p;
 }
 
+void Member::setDegreeX(float x)
+{
+	this->_degree.x = x;
+}
+
+void Member::setDegreeY(float y)
+{
+	this->_degree.y = y;
+}
+
+void Member::setDegreeZ(float z)
+{
+	this->_degree.z = z;
+}
+
 GLuint Member::getVAO() {
 	return (this->_vao);
 }
@@ -97,6 +112,11 @@ mat4 Member::getModel() {
 
 std::string Member::getName() {
 	return (this->_name);
+}
+
+std::map<std::string, Limit> &Member::getDegreeLock(void)
+{
+	return this->_degreeLock;
 }
 
 void Member::printName() {

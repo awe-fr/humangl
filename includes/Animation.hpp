@@ -23,8 +23,9 @@ class Animation
 
 		void	addFrame(std::map<std::string, std::vector<float>> bones);
 
-		std::string &	getName(void);
-		size_t			getNumberFrames(void);
+		std::string &			getName(void);
+		size_t					getNumberFrames(void);
+		std::vector<Frame> &	getFrames(void);
 };
 
 #endif

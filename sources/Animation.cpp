@@ -26,3 +26,8 @@ size_t Animation::getNumberFrames(void)
 {
 	return this->_frames.size();
 }
+
+std::vector<Frame> &Animation::getFrames(void)
+{
+	return this->_frames;
+}

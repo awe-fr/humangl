@@ -1,6 +1,6 @@
 #include "../includes/Root.hpp"
 
-Root::Root(std::vector<std::string> order, vec3 position, vec3 orientation) : _order(order), _postition(position), _orientaion(orientation) {
+Root::Root(std::vector<std::string> order, vec3 position, vec3 orientation) : _order(order), _postition(position), _orientation(orientation) {
     this->_model = identityMat(1);
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
@@ -66,4 +66,14 @@ GLuint Root::getIBO() {
 
 mat4 Root::getModel() {
 	return (this->_model);
+}
+
+void Root::setPosition(vec3 new_position)
+{
+	this->_postition = new_position;
+}
+
+void Root::setOrientation(vec3 new_orientation)
+{
+	this->_orientation = new_orientation;
 }

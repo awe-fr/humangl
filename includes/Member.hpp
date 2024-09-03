@@ -32,11 +32,15 @@ class Member {
 		void computeTravel();
 		void setPrevious(Member *p);
 		void setDegree(float x, float y, float z);
+		void setDegreeX(float x);
+		void setDegreeY(float y);
+		void setDegreeZ(float z);
 		GLuint getVAO();
 		GLuint getVBO();
 		GLuint getIBO();
 		mat4 getModel();
 		std::string getName();
+		std::map<std::string, Limit> &getDegreeLock(void);
 		void printName();
 };
 

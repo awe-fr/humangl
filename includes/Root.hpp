@@ -11,7 +11,7 @@ class Root
 	private:
 		std::vector<std::string>	_order;
 		vec3						_postition;
-		vec3						_orientaion;
+		vec3						_orientation;
 
 		mat4 _model;
 
@@ -28,6 +28,9 @@ class Root
 		GLuint getVBO();
 		GLuint getIBO();
 		mat4 getModel();
+
+		void setPosition(vec3 new_position);
+		void setOrientation(vec3 new_orientation);
 };
 
 #endif
