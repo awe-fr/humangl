@@ -1,6 +1,7 @@
 #include "../includes/InputParser.hpp"
 #include "../includes/Root.hpp"
 #include "../includes/Singleton.hpp"
+#include "../includes/Animation.hpp"
 
 InputParser::InputParser(std::string asf_path, std::string amc_path) : _asf_path(asf_path), _amc_path(amc_path), _root(nullptr) {}
 
@@ -1021,9 +1022,102 @@ bool InputParser::parseASF(void)
 	return true;
 }
 
-bool InputParser::parseAmc(void)
-{
 
+
+bool InputParser::parseAMCFrame(size_t &nb_line, std::string &line, std::map<std::string, std::vector<float>> &bones)
+{
+	while (std::getline(this->_amc_file, line))
+	{
+		trim(line);
+		if (line.size() == 0)
+		{
+			nb_line++;
+			continue;
+		}
+
+		if (std::isdigit(line[0]))
+			break;
+
+		std::string bone = parseKey(line);
+		if (bone != ASF_KEY_ROOT && this->_bonedata.find(bone) == this->_bonedata.end())
+		{
+			std::cerr << "AMC input file error: line " << nb_line << ": unknown bone '" << bone << "'." << std::endl;
+			return false;
+		}
+
+		trim(line);
+
+		std::vector<float> values;
+		while (line.size() != 0)
+		{
+			std::string str;
+			size_t i = 0;
+			
+			while (i != line.size() && line[i] != ' ' && line[i] != '\t' && line[i] != '\n' && line[i] != '\r')
+			{
+				str += line[i];
+				i++;
+			}
+
+			values.push_back((float)atof(str.c_str()));
+
+			line = line.substr(i);
+			trim(line);
+		}
+
+		std::pair<std::string, std::vector<float>> pair(bone, values);
+		bones.insert(pair);
+
+		nb_line++;
+	}
+
+	return true;
+} 
+
+bool InputParser::parseAMC(void)
+{
+	this->_amc_file.open(this->_amc_path);
+
+	if (!this->_amc_file)
+	{
+		std::cerr << "AMC input file error: file '" << this->_amc_path << "' does not exist." << std::endl;
+		return false;
+	}
+
+	this->_animation = new Animation(this->_amc_path);
+
+	std::string line;
+	size_t nb_line = 1;
+
+	while (std::getline(this->_amc_file, line))
+	{
+		trim(line);
+		if (line.size() == 0)
+		{
+			nb_line++;
+			continue;
+		}
+
+		while (std::isdigit(line[0]))
+		{
+			std::map<std::string, std::vector<float>> bones;
+			if (!parseAMCFrame(nb_line, line, bones))
+			{
+				this->_amc_file.close();
+				return false;
+			}
+
+			this->_animation->addFrame(bones);
+
+			if (std::isdigit(line[0]))
+				nb_line++;
+
+		}
+
+		nb_line++;
+	}
+
+	this->_amc_file.close();
 
 	return true;
 }
@@ -1061,4 +1155,9 @@ void InputParser::buildMembers(void)
 Root *InputParser::getRoot(void)
 {
 	return this->_root;
+}
+
+Animation *InputParser::getAnimation(void)
+{
+	return this->_animation;
 }

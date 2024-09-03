@@ -8,6 +8,7 @@
 # include <algorithm>
 # include <stdlib.h>
 # include <map>
+# include <cctype>
 
 # include "GraphicsMath.h"
 
@@ -29,6 +30,7 @@
 # define ASF_KEY_BONEDATA_LIMITS "limits"
 
 class Root;
+class Animation;
 
 typedef struct s_RootDefinition
 {
@@ -68,6 +70,8 @@ class InputParser
 		std::map<std::string, std::string>		_hierarchy;
 		std::vector<std::string>				_hierarchy_order;
 
+		Animation *	_animation;
+
 		bool	parseASFRoot(size_t &nb_line);
 		bool	parseASFRootOrder(std::string &line, size_t &nb_line);
 		bool	parseASFRootAxis(std::string &line, size_t &nb_line);
@@ -82,17 +86,20 @@ class InputParser
 		bool	parseASFHierarchy(size_t &nb_line);
 
 		void	buildRoot(void);
+
+		bool	parseAMCFrame(size_t &nb_line, std::string &line, std::map<std::string, std::vector<float>> &bones);
 	
 	public:
 		InputParser(std::string asf_path, std::string amc_path);
 		~InputParser(void);
 
 		bool	parseASF(void);
-		bool	parseAmc(void);
+		bool	parseAMC(void);
 
 		void	buildMembers(void);
 
-		Root *	getRoot(void);
+		Root *		getRoot(void);
+		Animation *	getAnimation(void);
 };
 
 #endif
