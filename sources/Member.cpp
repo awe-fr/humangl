@@ -64,15 +64,21 @@ void Member::computeTravel() {
 	this->_model = identityMat(1);
 	if (this->_previous != nullptr) {
 		this->_model = this->_previous->_model;
-		this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
+		this->_model = matMult(this->_model, translationMat(this->_previous->_direction.x * this->_previous->_length, 
+															this->_previous->_direction.y * this->_previous->_length, 
+															this->_previous->_direction.z * this->_previous->_length));
+		// this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 	}
 	else if (this->_root != nullptr) {
 		this->_model = this->_root->getModel();
+		// this->_model = matMult(this->_model, translationMat(this->_direction.x * this->_length, 
+		// 													this->_direction.y * this->_length, 
+		// 													this->_direction.z * this->_length));
 		// this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 	}
-	this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
-	this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
-	this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
+	// this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
+	// this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
+	// this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
 }
 
 void Member::setPrevious(Member *p) {

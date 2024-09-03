@@ -12,15 +12,7 @@ int main(void) {
 	WindowsApp *app = new WindowsApp();
 	input_parser.buildMembers();
 
-
-	// Member *test1 = new Member("test1", 1);
-	// Member *test2 = new Member("test2", 1);
-	// Member *test3 = new Member("test3", 1);
-
 	vec4 color; color.x = 0.33; color.y = 0.33; color.z = 0.33; color.w = 1;
-	
-	// test2->setPrevious(test1);
-	// test3->setPrevious(test2);
 
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -28,11 +20,6 @@ int main(void) {
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
-	float ref1 = 0;
-	float ref2 = 0;
-	float ref3 = 0;
-	float ref4 = 0;
 
 	float mvpPopulated[16];
 	float vec4Populated[16];
@@ -60,80 +47,72 @@ int main(void) {
 		app->computeMovement();
 		glUseProgram(app->getProgramID());
 
-		// test1->setDegree(ref1, ref2, ref3);
-		// test2->setDegree(45, 0, 60);
-		// test3->setDegree(45, 60, 0);
+		// if (i == nb_frames)
+		// 	i = 0;
+		// Frame frame = frames[i];
+		// for (std::map<std::string, std::vector<float>>::iterator it = frame.bones.begin(); it != frame.bones.end(); it++)
+		// {
+		// 	if (it->first == ASF_KEY_ROOT)
+		// 	{
+		// 		Root *root = input_parser.getRoot();
+		// 		vec3 position;
+		// 		vec3 orientation;
+		// 		for (size_t j = 0; j < it->second.size(); j++)
+		// 		{
+		// 			switch (j)
+		// 			{
+		// 				case 0:
+		// 					position.x = it->second[j];
+		// 					break;
 
-		// test1->computeTravel();
-		// test2->computeTravel();
-		// test3->computeTravel();
+		// 				case 1:
+		// 					position.y = it->second[j];
+		// 					break;
 
-		if (i == nb_frames)
-			i = 0;
-		Frame frame = frames[i];
-		for (std::map<std::string, std::vector<float>>::iterator it = frame.bones.begin(); it != frame.bones.end(); it++)
-		{
-			if (it->first == ASF_KEY_ROOT)
-			{
-				Root *root = input_parser.getRoot();
-				vec3 position;
-				vec3 orientation;
-				for (size_t j = 0; j < it->second.size(); j++)
-				{
-					switch (j)
-					{
-						case 0:
-							position.x = it->second[j];
-							break;
-
-						case 1:
-							position.y = it->second[j];
-							break;
-
-						case 2:
-							position.z = it->second[j];
-							break;
+		// 				case 2:
+		// 					position.z = it->second[j];
+		// 					break;
 						
-						case 3:
-							orientation.x = it->second[j];
-							break;
+		// 				case 3:
+		// 					orientation.x = it->second[j];
+		// 					break;
 
-						case 4:
-							orientation.y = it->second[j];
-							break;
+		// 				case 4:
+		// 					orientation.y = it->second[j];
+		// 					break;
 
-						case 5:
-							orientation.z = it->second[j];
-							break;
+		// 				case 5:
+		// 					orientation.z = it->second[j];
+		// 					break;
 
-						default:
-							break;
-					}
-				}
+		// 				default:
+		// 					break;
+		// 			}
+		// 		}
 
-				root->setPosition(position);
-				root->setOrientation(orientation);
-			}
-			else
-			{
-				Member *member = inst->findByName(it->first);
-				std::map<std::string, Limit> degree_lock = member->getDegreeLock();
-				size_t j = 0;
+		// 		root->setPosition(position);
+		// 		root->setOrientation(orientation);
+		// 	}
+		// 	else
+		// 	{
+		// 		Member *member = inst->findByName(it->first);
+		// 		std::map<std::string, Limit> degree_lock = member->getDegreeLock();
+		// 		size_t j = 0;
 
-				for (std::map<std::string, Limit>::iterator itt = degree_lock.begin(); itt != degree_lock.end(); itt++)
-				{
-					if (itt->first == "rx")
-						member->setDegreeX(it->second[j]);
-					else if (itt->first == "ry")
-						member->setDegreeY(it->second[j]);
-					else if (itt->first == "rz")
-						member->setDegreeZ(it->second[j]);
-					j++;
-				}
-			}
-		}
+		// 		for (std::map<std::string, Limit>::iterator itt = degree_lock.begin(); itt != degree_lock.end(); itt++)
+		// 		{
+		// 			if (itt->first == "rx")
+		// 				member->setDegreeX(it->second[j]);
+		// 			else if (itt->first == "ry")
+		// 				member->setDegreeY(it->second[j]);
+		// 			else if (itt->first == "rz")
+		// 				member->setDegreeZ(it->second[j]);
+		// 			j++;
+		// 		}
+		// 	}
+		// }
 
-		i++;
+		// i++;
 
 		for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 			(*it)->computeTravel();
@@ -162,10 +141,9 @@ int main(void) {
 			populateMat(mvpPopulated, MVP);
 			GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
 			glUniformMatrix4fv(mvp, 1, GL_FALSE, mvpPopulated);
-			
+
 			GLuint colorvec = glGetUniformLocation(app->getProgramID(), "cvec");
 			glUniform4fv(colorvec, 1, vec4Populated);
-
 
 			glBindVertexArray(lst[i]->getVAO());
 
@@ -178,12 +156,8 @@ int main(void) {
 			glDisableVertexAttribArray(0);
 		}
 
-		ImGui::SetNextWindowSize(ImVec2(250, 125), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(250, 55), ImGuiCond_FirstUseEver);
 		ImGui::Begin("HumanGL settings");
-
-		ImGui::SliderFloat("X", &ref1, -360, 360);
-		ImGui::SliderFloat("Y", &ref2, -360, 360);
-		ImGui::SliderFloat("Z", &ref3, -360, 360);
 
 		ImGui::ColorEdit3("color", vec4Populated);
 
