@@ -120,6 +120,10 @@ void WindowsApp::computeMovement() {
 	if (glfwGetKey(this->_window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		horizontalAngle -= cameraSpeed * this->_deltaTime;
 	}
+	if (glfwGetKey(this->_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		speed = 30;
+	else
+		speed = 3;
 
 	direction.x = cos(verticalAngle) * sin(horizontalAngle);
 	direction.y = sin(verticalAngle);
