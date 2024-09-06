@@ -74,15 +74,15 @@ void Member::computeTravel() {
 		this->_model.data[2][2] = 0.7867;
 	}
 	else if (this->_name == "rhipjoint"){
-		this->_model.data[0][0] = -0.1678;
-		this->_model.data[0][1] = 0.9315;
-		this->_model.data[0][2] = -0.3228;
-		this->_model.data[1][0] = 0.9315;
-		this->_model.data[1][1] = 0.0426;
-		this->_model.data[1][2] = -0.3613;
-		this->_model.data[2][0] = -0.3228;
-		this->_model.data[2][1] = -0.3613;
-		this->_model.data[2][2] = -0.8748;
+		this->_model.data[0][0] = -0.4829;
+		this->_model.data[0][1] = -0.6451;
+		this->_model.data[0][2] = -0.5912;
+		this->_model.data[1][0] = 0.6451;
+		this->_model.data[1][1] = -0.7220;
+		this->_model.data[1][2] = 0.2502;
+		this->_model.data[2][0] = 0.5912;
+		this->_model.data[2][1] = 0.2502;
+		this->_model.data[2][2] = -0.7677;
 	}
 	else {
 		this->_model.data[0][0] = -0.9998186;
