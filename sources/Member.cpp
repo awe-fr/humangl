@@ -62,15 +62,52 @@ void Member::setDegree(float x, float y, float z) {
 
 void Member::computeTravel() {
 	this->_model = identityMat(1);
+	if (this->_name == "lhipjoint") {
+		this->_model.data[0][0] = -0.5001;
+		this->_model.data[0][1] = 0.6556;
+		this->_model.data[0][2] = -0.5657;
+		this->_model.data[1][0] = -0.6556;
+		this->_model.data[1][1] = -0.7134;
+		this->_model.data[1][2] = -0.2472;
+		this->_model.data[2][0] = -0.5657;
+		this->_model.data[2][1] = 0.2472;
+		this->_model.data[2][2] = 0.7867;
+	}
+	else if (this->_name == "rhipjoint"){
+		this->_model.data[0][0] = -0.1678;
+		this->_model.data[0][1] = 0.9315;
+		this->_model.data[0][2] = -0.3228;
+		this->_model.data[1][0] = 0.9315;
+		this->_model.data[1][1] = 0.0426;
+		this->_model.data[1][2] = -0.3613;
+		this->_model.data[2][0] = -0.3228;
+		this->_model.data[2][1] = -0.3613;
+		this->_model.data[2][2] = -0.8748;
+	}
+	else {
+		this->_model.data[0][0] = -0.9998186;
+		this->_model.data[0][1] = 0.01898626;
+		this->_model.data[0][2] = -0.00130494;
+		this->_model.data[1][0] = 0.01898626;
+		this->_model.data[1][1] = 0.990426032;
+		this->_model.data[1][2] = -0.13671326;
+		this->_model.data[2][0] = -0.00130494;
+		this->_model.data[2][1] = -0.13671326;
+		this->_model.data[2][2] = -0.99060936;
+	}
 	if (this->_previous != nullptr) {
-		this->_model = this->_previous->_model;
-		this->_model = matMult(this->_model, translationMat(this->_previous->_direction.x * this->_previous->_length, 
-															this->_previous->_direction.y * this->_previous->_length, 
-															this->_previous->_direction.z * this->_previous->_length));
+		// mat4 prev = translationMat(this->_direction.x * this->_length, 
+		//  													this->_direction.y * this->_length, 
+		//  													this->_direction.z * this->_length);
+		// this->_model = this->_previous->_model;
+		// this->_model = matMult(this->_model, translationMat(this->_previous->_direction.x * this->_previous->_length, 
+		// 													this->_previous->_direction.y * this->_previous->_length, 
+		// 													this->_previous->_direction.z * this->_previous->_length));
 		// this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 	}
 	else if (this->_root != nullptr) {
-		this->_model = this->_root->getModel();
+		// this->_model = this->_root->getModel();
+		// this->_model = directionMat(this->_direction);
 		// this->_model = matMult(this->_model, translationMat(this->_direction.x * this->_length, 
 		// 													this->_direction.y * this->_length, 
 		// 													this->_direction.z * this->_length));

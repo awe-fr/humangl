@@ -1,5 +1,26 @@
 #include "./../includes/GraphicsMath.h"
 
+mat4 directionMat(vec3 direction) {
+	mat4 matrix = identityMat(1);
+
+	vec3 normDir = vecNormalize(direction);
+	vec3 right = vecNormalize(vecCross(vec3{0,1,0}, normDir));
+	vec3 up = vecNormalize(vecCross(normDir, right));
+
+
+	matrix.data[0][0] =	right.x;
+	matrix.data[0][1] = right.y;
+	matrix.data[0][2] = right.z;
+	matrix.data[1][0] = up.x;
+	matrix.data[1][1] = up.y;
+	matrix.data[1][2] = up.z;
+	matrix.data[2][0] = normDir.x;
+	matrix.data[2][1] = normDir.y;
+	matrix.data[2][2] = normDir.z;
+
+	return(matrix);
+}
+
 mat4 matMult(mat4 a, mat4 b) {
 	mat4	matrix;
 

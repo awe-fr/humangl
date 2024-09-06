@@ -22,6 +22,7 @@ struct vec3 {
 	float z;
 };
 
+mat4 directionMat(vec3 direction);
 mat4 matMult(mat4 a, mat4 b);
 mat4 identityMat(float id);
 mat4 scaletyMat(float x, float y, float z);
