@@ -136,7 +136,7 @@ int main(void) {
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
 
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < lst.size(); i++) {
 			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), lst[i]->getModel()));
 			populateMat(mvpPopulated, MVP);
 			GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");

@@ -9,6 +9,10 @@ struct mat4 {
 	float data[4][4];	
 };
 
+struct mat3 {
+	float data[3][3];	
+};
+
 struct vec4 {
 	float x;
 	float y;
@@ -32,7 +36,11 @@ mat4 translationMat(float x, float y, float z);
 mat4 rotationMatY(float degree);
 mat4 rotationMatX(float degree);
 mat4 rotationMatZ(float degree);
+mat4 upcastmat3(mat3 toUp);
+mat4 quatMat(vec3 dir);
 void populateMat(float buf[16], mat4 m);
+
+mat3 identityMat3(float id);
 
 float vecDot(vec3 a, vec3 b);
 vec3 vecCross(vec3 f, vec3 d);

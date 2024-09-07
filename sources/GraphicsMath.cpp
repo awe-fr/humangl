@@ -154,6 +154,66 @@ mat4 rotationMatZ(float degree) {
 	return matrix;
 }
 
+mat4 upcastmat3(mat3 toUp) {
+	mat4 matrix = identityMat(1);
+
+	for (int y = 0; y < 3; y++) {
+		for (int x = 0; x < 3; x++) {
+			matrix.data[y][x] = toUp.data[y][x];
+		}
+	}
+	
+	return (matrix);
+}
+#include <iostream>
+mat4 quatMat(vec3 dir) {
+	vec3 Ndir = vecNormalize(dir);
+	vec3 Nup = vecNormalize({0,1,0});
+	vec3 NrotAxis = vecNormalize(vecCross(Nup, Ndir));
+	float angle = acos(vecDot(Nup, Ndir));
+	float Sangle = sin(angle);
+	float Cangle = cos(angle);
+
+	mat3 K = identityMat3(0);
+
+	K.data[0][1] = -NrotAxis.z;
+	K.data[0][2] = NrotAxis.y;
+	K.data[1][0] = NrotAxis.z;
+	K.data[1][2] = -NrotAxis.x;
+	K.data[2][0] = -NrotAxis.y;
+	K.data[2][1] = NrotAxis.x;
+
+
+
+	// for (int y = 0; y < 4; y++) {
+	// 	for (int x = 0; x < 4; x++) {
+	// 		std::cout << test.data[y][x] << " ";
+	// 	}
+	// 	std::cout << std::endl;
+	// }
+	// std::cout << std::endl;
+
+
+	std::cout << angle << std::endl;
+	// std::cout << NrotAxis.x << " " << NrotAxis.y << " " << NrotAxis.z << std::endl;
+}
+
+mat3 identityMat3(float id) {
+	mat3	matrix;
+
+	for (int y = 0; y < 3; y++) {
+		for (int x = 0; x < 3; x++) {
+			matrix.data[y][x] = 0;
+		}
+	}
+
+	matrix.data[0][0] = id;
+	matrix.data[1][1] = id;
+	matrix.data[2][2] = id;
+
+	return (matrix);
+}
+
 void populateMat(float buf[16], mat4 m)
 {
 	for (int y = 0; y < 4; ++y)
