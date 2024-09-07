@@ -18,8 +18,8 @@ int main(void) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	// glEnable(GL_CULL_FACE);
-	// glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	float mvpPopulated[16];
 	float vec4Populated[16];
@@ -133,10 +133,10 @@ int main(void) {
 		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test->getIBO());
 		// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		// glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		// glDisableVertexAttribArray(0);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDisableVertexAttribArray(0);
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 3; i++) {
 			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), lst[i]->getModel()));
 			populateMat(mvpPopulated, MVP);
 			GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
