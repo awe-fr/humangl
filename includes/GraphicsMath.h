@@ -40,6 +40,9 @@ mat4 upcastmat3(mat3 toUp);
 mat4 quatMat(vec3 dir);
 void populateMat(float buf[16], mat4 m);
 
+mat3 matMult3Float(mat3 mat, float num);
+mat3 matMult3(mat3 a, mat3 b);
+mat3 matadd3(mat3 a, mat3 b);
 mat3 identityMat3(float id);
 
 float vecDot(vec3 a, vec3 b);

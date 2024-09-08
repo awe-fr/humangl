@@ -62,53 +62,56 @@ void Member::setDegree(float x, float y, float z) {
 
 void Member::computeTravel() {
 	this->_model = identityMat(1);
-	quatMat(this->_direction);
-	if (this->_name == "lhipjoint") {
-		this->_model.data[0][0] = -0.5001f;
-		this->_model.data[0][1] = 0.6556f;
-		this->_model.data[0][2] = -0.5657f;
-		this->_model.data[1][0] = -0.6556f;
-		this->_model.data[1][1] = -0.7134f;
-		this->_model.data[1][2] = -0.2472f;
-		this->_model.data[2][0] = -0.5657f;
-		this->_model.data[2][1] = 0.2472f;
-		this->_model.data[2][2] = 0.7867f;
-	}
-	else if (this->_name == "rhipjoint"){
-		this->_model.data[0][0] = -0.4829f;
-		this->_model.data[0][1] = -0.6451f;
-		this->_model.data[0][2] = -0.5912f;
-		this->_model.data[1][0] = 0.6451f;
-		this->_model.data[1][1] = -0.7220f;
-		this->_model.data[1][2] = 0.2502f;
-		this->_model.data[2][0] = 0.5912f;
-		this->_model.data[2][1] = 0.2502f;
-		this->_model.data[2][2] = -0.7677f;
-	}
-	else if (this->_name == "lowerback"){
-		this->_model.data[0][0] = 0.999953f;
-		this->_model.data[0][1] = 0.00967f;
-		this->_model.data[0][2] = 0.000336f;
-		this->_model.data[1][0] = -0.00967f;
-		this->_model.data[1][1] = 0.99753f;
-		this->_model.data[1][2] = 0.06952f;
-		this->_model.data[2][0] = 0.000336f;
-		this->_model.data[2][1] = -0.06952f;
-		this->_model.data[2][2] = 0.99753f;
-	}
+	
+	// if (this->_name == "lhipjoint") {
+	// 	this->_model.data[0][0] = -0.5001f;
+	// 	this->_model.data[0][1] = 0.6556f;
+	// 	this->_model.data[0][2] = -0.5657f;
+	// 	this->_model.data[1][0] = -0.6556f;
+	// 	this->_model.data[1][1] = -0.7134f;
+	// 	this->_model.data[1][2] = -0.2472f;
+	// 	this->_model.data[2][0] = -0.5657f;
+	// 	this->_model.data[2][1] = 0.2472f;
+	// 	this->_model.data[2][2] = 0.7867f;
+	// }
+	// else if (this->_name == "rhipjoint"){
+	// 	this->_model.data[0][0] = -0.4829f;
+	// 	this->_model.data[0][1] = -0.6451f;
+	// 	this->_model.data[0][2] = -0.5912f;
+	// 	this->_model.data[1][0] = 0.6451f;
+	// 	this->_model.data[1][1] = -0.7220f;
+	// 	this->_model.data[1][2] = 0.2502f;
+	// 	this->_model.data[2][0] = 0.5912f;
+	// 	this->_model.data[2][1] = 0.2502f;
+	// 	this->_model.data[2][2] = -0.7677f;
+	// }
+	// else if (this->_name == "lowerback"){
+	// 	this->_model.data[0][0] = 0.999953f;
+	// 	this->_model.data[0][1] = 0.00967f;
+	// 	this->_model.data[0][2] = 0.000336f;
+	// 	this->_model.data[1][0] = -0.00967f;
+	// 	this->_model.data[1][1] = 0.99753f;
+	// 	this->_model.data[1][2] = 0.06952f;
+	// 	this->_model.data[2][0] = 0.000336f;
+	// 	this->_model.data[2][1] = -0.06952f;
+	// 	this->_model.data[2][2] = 0.99753f;
+	// }
 	if (this->_previous != nullptr) {
-		mat4 prev = translationMat(this->_direction.x * this->_length, 
-		 													this->_direction.y * this->_length, 
-		 													this->_direction.z * this->_length);
 		this->_model = this->_previous->_model;
-		if (this->_previous->_previous == nullptr)
-			this->_model = identityMat(1);
-		this->_model = matMult(this->_model, translationMat(this->_previous->_direction.x * this->_previous->_length, 
-															this->_previous->_direction.y * this->_previous->_length, 
-															this->_previous->_direction.z * this->_previous->_length));
-		// this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
+		// mat4 prev = translationMat(this->_direction.x * this->_length, 
+		//  													this->_direction.y * this->_length, 
+		//  													this->_direction.z * this->_length);
+		// this->_model = this->_previous->_model;
+		// if (this->_previous->_previous == nullptr)
+		// 	this->_model = identityMat(1);
+		// this->_model = matMult(this->_model, translationMat(this->_previous->_direction.x * this->_previous->_length, 
+		// 													this->_previous->_direction.y * this->_previous->_length, 
+		// 													this->_previous->_direction.z * this->_previous->_length));
+		this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
+		// this->_model = matMult(this->_model,quatMat(this->_direction));
 	}
 	else if (this->_root != nullptr) {
+		this->_model = quatMat(this->_direction);
 		// this->_model = this->_root->getModel();
 		// this->_model = directionMat(this->_direction);
 		// this->_model = matMult(this->_model, translationMat(this->_direction.x * this->_length, 

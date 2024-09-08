@@ -183,19 +183,70 @@ mat4 quatMat(vec3 dir) {
 	K.data[2][0] = -NrotAxis.y;
 	K.data[2][1] = NrotAxis.x;
 
+	mat3 K2 = matMult3(K, K);
 
+	mat3 sinK = matMult3Float(K, Sangle);
+	mat3 cosK2 = matMult3Float(K2, (1 - Cangle));
 
-	// for (int y = 0; y < 4; y++) {
-	// 	for (int x = 0; x < 4; x++) {
-	// 		std::cout << test.data[y][x] << " ";
+	mat3 R = matadd3(identityMat3(1), matadd3(sinK, cosK2));
+
+	mat4 M = upcastmat3(R);
+
+	return (M);
+	// for (int y = 0; y < 3; y++) {
+	// 	for (int x = 0; x < 3; x++) {
+	// 		std::cout << K.data[y][x] << " ";
+	// 	}
+	// 	std::cout << std::endl;
+	// }
+	// std::cout << " ---- " << std::endl;
+	// for (int y = 0; y < 3; y++) {
+	// 	for (int x = 0; x < 3; x++) {
+	// 		std::cout << R.data[y][x] << " ";
 	// 	}
 	// 	std::cout << std::endl;
 	// }
 	// std::cout << std::endl;
 
 
-	std::cout << angle << std::endl;
+	// std::cout << angle << std::endl;
 	// std::cout << NrotAxis.x << " " << NrotAxis.y << " " << NrotAxis.z << std::endl;
+}
+
+mat3 matMult3Float(mat3 mat, float num) {
+	mat3 matrix;
+
+	for (int y = 0; y < 3; y++) {
+		for (int x = 0; x < 3; x++) {
+			matrix.data[y][x] = mat.data[y][x] * num;
+		}
+	}
+
+	return (matrix);
+}
+
+mat3 matadd3(mat3 a, mat3 b) {
+	mat3 matrix;
+
+	for (int y = 0; y < 3; y++) {
+		for (int x = 0; x < 3; x++) {
+			matrix.data[y][x] = a.data[y][x] + b.data[y][x];
+		}
+	}
+
+	return (matrix);
+}
+
+mat3 matMult3(mat3 a, mat3 b) {
+	mat3	matrix;
+
+	for (int y = 0; y < 3; y++) {
+		for (int x = 0; x < 3; x++) {
+			matrix.data[y][x] = a.data[y][0] * b.data[0][x] + a.data[y][1] * b.data[1][x] + a.data[y][2] * b.data[2][x];
+		}
+	}
+
+	return (matrix);
 }
 
 mat3 identityMat3(float id) {
