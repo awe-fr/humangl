@@ -36,6 +36,7 @@ void Animation::play(void)
 	else
 	{
 		Animation::_playing = true;
+		this->_is_playing = true;
 		MemberList *member_list = MemberList::getInstance();
 
 		if (this->_current_frame == this->_frames.size())
