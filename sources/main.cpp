@@ -32,9 +32,8 @@ int main(void) {
 		lst[i]->printName();
 	}
 
-	size_t nb_frames = input_parser.getAnimation()->getNumberFrames();
-	std::vector<Frame> frames = input_parser.getAnimation()->getFrames();
-	size_t i = 0;
+	Animation *walk = input_parser.getAnimation();
+	walk->setRoot(input_parser.getRoot());
 
 	while(app->isClosed() != true) {
 
@@ -47,72 +46,7 @@ int main(void) {
 		app->computeMovement();
 		glUseProgram(app->getProgramID());
 
-		// if (i == nb_frames)
-		// 	i = 0;
-		// Frame frame = frames[i];
-		// for (std::map<std::string, std::vector<float>>::iterator it = frame.bones.begin(); it != frame.bones.end(); it++)
-		// {
-		// 	if (it->first == ASF_KEY_ROOT)
-		// 	{
-		// 		Root *root = input_parser.getRoot();
-		// 		vec3 position;
-		// 		vec3 orientation;
-		// 		for (size_t j = 0; j < it->second.size(); j++)
-		// 		{
-		// 			switch (j)
-		// 			{
-		// 				case 0:
-		// 					position.x = it->second[j];
-		// 					break;
-
-		// 				case 1:
-		// 					position.y = it->second[j];
-		// 					break;
-
-		// 				case 2:
-		// 					position.z = it->second[j];
-		// 					break;
-						
-		// 				case 3:
-		// 					orientation.x = it->second[j];
-		// 					break;
-
-		// 				case 4:
-		// 					orientation.y = it->second[j];
-		// 					break;
-
-		// 				case 5:
-		// 					orientation.z = it->second[j];
-		// 					break;
-
-		// 				default:
-		// 					break;
-		// 			}
-		// 		}
-
-		// 		root->setPosition(position);
-		// 		root->setOrientation(orientation);
-		// 	}
-		// 	else
-		// 	{
-		// 		Member *member = inst->findByName(it->first);
-		// 		std::map<std::string, Limit> degree_lock = member->getDegreeLock();
-		// 		size_t j = 0;
-
-		// 		for (std::map<std::string, Limit>::iterator itt = degree_lock.begin(); itt != degree_lock.end(); itt++)
-		// 		{
-		// 			if (itt->first == "rx")
-		// 				member->setDegreeX(it->second[j]);
-		// 			else if (itt->first == "ry")
-		// 				member->setDegreeY(it->second[j]);
-		// 			else if (itt->first == "rz")
-		// 				member->setDegreeZ(it->second[j]);
-		// 			j++;
-		// 		}
-		// 	}
-		// }
-
-		// i++;
+		// walk->play();
 
 		for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 			(*it)->computeTravel();
