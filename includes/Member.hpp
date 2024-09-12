@@ -16,6 +16,7 @@ class Member : public IObserver {
 		std::string						_name;
 		vec3							_direction;
 		float							_length;
+		float							_base_length;
 		vec3							_degree;
 		std::map<std::string, Limit>	_degreeLock;
 		Member *						_previous;

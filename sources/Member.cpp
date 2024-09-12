@@ -2,7 +2,7 @@
 #include "../includes/ImguiValues.hpp"
 
 Member::Member(std::string name, vec3 direction, float length, vec3 degree, std::map<std::string, Limit> degree_lock, Member *previous, Root *root) :
-				_name(name), _direction(direction), _length(length), _degree(degree), _degreeLock(degree_lock), _previous(previous), _root(root)
+				_name(name), _direction(direction), _length(length), _base_length(length), _degree(degree), _degreeLock(degree_lock), _previous(previous), _root(root)
 {
 	this->_model = identityMat(1);
 
@@ -183,10 +183,12 @@ void Member::update(void *param)
 	switch (ratio->type)
 	{
 		case Length:
-			this->_vertex[1] = ratio->value * this->_length;
-			this->_vertex[4] = ratio->value * this->_length;
-			this->_vertex[7] = ratio->value * this->_length;
-			this->_vertex[16] = ratio->value * this->_length;
+			this->_length = ratio->value * this->_base_length;
+
+			this->_vertex[1] = this->_length;
+			this->_vertex[4] = this->_length;
+			this->_vertex[7] = this->_length;
+			this->_vertex[16] = this->_length;
 			break;
 
 		case Width:

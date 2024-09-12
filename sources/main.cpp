@@ -98,7 +98,7 @@ int main(void) {
 			glDisableVertexAttribArray(0);
 		}
 
-		ImGui::SetNextWindowSize(ImVec2(250, 55), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::Begin("HumanGL settings");
 
 		ImGui::SliderFloat("Length", imgui_values.getLength(), 0, 5);
@@ -114,7 +114,7 @@ int main(void) {
 
 	for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 		(*it)->detach();
-		
+
 	inst->cleanup();
 	inst->deleteInstance();
 	delete app;
