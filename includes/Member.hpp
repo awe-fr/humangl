@@ -9,7 +9,8 @@
 # include "InputParser.hpp"
 # include "Observer.hpp"
 
-# define MEMBER_BASE_WIDTH 0.05f
+# define MEMBER_BASE_WIDTH_START 0.05f
+# define MEMBER_BASE_WIDTH_END 0.01f
 
 class Member : public IObserver {
 	private:
