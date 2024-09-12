@@ -3,6 +3,7 @@
 #include "../includes/InputParser.hpp"
 #include "../includes/Singleton.hpp"
 #include "../includes/Animation.hpp"
+#include "../includes/ImguiValues.hpp"
 
 int main(void) {
 	InputParser input_parser("animations/asf/02.asf", "animations/amc/walk.amc");
@@ -28,6 +29,11 @@ int main(void) {
 	MemberList *inst = MemberList::getInstance();
 	std::vector<Member *> lst = inst->getList();
 
+	ImguiValues imgui_values;
+
+	for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
+		(*it)->attach(&imgui_values);
+
 	for (int i = 0; i < lst.size(); i++) {
 		lst[i]->printName();
 	}
@@ -45,6 +51,8 @@ int main(void) {
 
 		app->computeMovement();
 		glUseProgram(app->getProgramID());
+
+		imgui_values.notify();
 
 		// walk->play();
 
@@ -93,6 +101,9 @@ int main(void) {
 		ImGui::SetNextWindowSize(ImVec2(250, 55), ImGuiCond_FirstUseEver);
 		ImGui::Begin("HumanGL settings");
 
+		ImGui::SliderFloat("Length", imgui_values.getLength(), 0, 5);
+		ImGui::SliderFloat("Width", imgui_values.getWidth(), 0, 5);
+
 		ImGui::ColorEdit3("color", vec4Populated);
 
 		ImGui::End();
@@ -100,6 +111,10 @@ int main(void) {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
+
+	for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
+		(*it)->detach();
+		
 	inst->cleanup();
 	inst->deleteInstance();
 	delete app;

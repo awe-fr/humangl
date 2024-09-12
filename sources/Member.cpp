@@ -1,4 +1,5 @@
 #include "../includes/Member.hpp"
+#include "../includes/ImguiValues.hpp"
 
 Member::Member(std::string name, vec3 direction, float length, vec3 degree, std::map<std::string, Limit> degree_lock, Member *previous, Root *root) :
 				_name(name), _direction(direction), _length(length), _degree(degree), _degreeLock(degree_lock), _previous(previous), _root(root)
@@ -6,14 +7,14 @@ Member::Member(std::string name, vec3 direction, float length, vec3 degree, std:
 	this->_model = identityMat(1);
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
-	this->_vertex[0] = 0.01f;    this->_vertex[1] = length;  this->_vertex[2] = 0.01f;
-	this->_vertex[3] = -0.01f;   this->_vertex[4] = length;  this->_vertex[5] = -0.01f;
-	this->_vertex[6] = -0.01f;   this->_vertex[7] = length;  this->_vertex[8] = 0.01f;
-	this->_vertex[9] = 0.05f;   this->_vertex[10] = 0;      this->_vertex[11] = -0.05f;
-	this->_vertex[12] = -0.05f; this->_vertex[13] = 0;      this->_vertex[14] = -0.05f;
-	this->_vertex[15] = 0.01f;   this->_vertex[16] = length; this->_vertex[17] = -0.01f;
-	this->_vertex[18] = 0.05f;  this->_vertex[19] = 0;      this->_vertex[20] = 0.05f;
-	this->_vertex[21] = -0.05f; this->_vertex[22] = 0;      this->_vertex[23] = 0.05f;
+	this->_vertex[0] = 0.01f;    			this->_vertex[1] = length;  this->_vertex[2] = 0.01f;
+	this->_vertex[3] = -0.01f;   			this->_vertex[4] = length;  this->_vertex[5] = -0.01f;
+	this->_vertex[6] = -0.01f;   			this->_vertex[7] = length;  this->_vertex[8] = 0.01f;
+	this->_vertex[9] = MEMBER_BASE_WIDTH;   this->_vertex[10] = 0;      this->_vertex[11] = -MEMBER_BASE_WIDTH;
+	this->_vertex[12] = -MEMBER_BASE_WIDTH;	this->_vertex[13] = 0;      this->_vertex[14] = -MEMBER_BASE_WIDTH;
+	this->_vertex[15] = 0.01f;   			this->_vertex[16] = length; this->_vertex[17] = -0.01f;
+	this->_vertex[18] = MEMBER_BASE_WIDTH;  this->_vertex[19] = 0;      this->_vertex[20] = MEMBER_BASE_WIDTH;
+	this->_vertex[21] = -MEMBER_BASE_WIDTH; this->_vertex[22] = 0;      this->_vertex[23] = MEMBER_BASE_WIDTH;
 
 	this->_index = new int[sizeof(int) * 36];
 	this->_index[0] = 0;  this->_index[1] = 1;  this->_index[2] = 2;
@@ -173,4 +174,39 @@ void Member::printName() {
 		std::cout << this->_name << " : " << this->_previous->_name << std::endl;
 	else
 		std::cout << this->_name << ": Root" << std::endl;
+}
+
+void Member::update(void *param)
+{
+	Param *ratio = (Param *)param;
+
+	switch (ratio->type)
+	{
+		case Length:
+			this->_vertex[1] = ratio->value * this->_length;
+			this->_vertex[4] = ratio->value * this->_length;
+			this->_vertex[7] = ratio->value * this->_length;
+			this->_vertex[16] = ratio->value * this->_length;
+			break;
+
+		case Width:
+			this->_vertex[9] = ratio->value * MEMBER_BASE_WIDTH;
+			this->_vertex[12] = ratio->value * (-MEMBER_BASE_WIDTH);
+			this->_vertex[18] = ratio->value * MEMBER_BASE_WIDTH;
+			this->_vertex[21] = ratio->value * (-MEMBER_BASE_WIDTH);
+			this->_vertex[11] = ratio->value * (-MEMBER_BASE_WIDTH);
+			this->_vertex[14] = ratio->value * (-MEMBER_BASE_WIDTH);
+			this->_vertex[20] = ratio->value * MEMBER_BASE_WIDTH;
+			this->_vertex[23] = ratio->value * MEMBER_BASE_WIDTH;
+			break;
+		
+		default:
+			break;
+	}
+
+	glBindVertexArray(this->_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24, &this->_vertex[0], GL_STATIC_DRAW);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

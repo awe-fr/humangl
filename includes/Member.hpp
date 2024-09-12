@@ -7,8 +7,11 @@
 # include "GraphicsMath.h"
 # include "Root.hpp"
 # include "InputParser.hpp"
+# include "Observer.hpp"
 
-class Member {
+# define MEMBER_BASE_WIDTH 0.05f
+
+class Member : public IObserver {
 	private:
 		std::string						_name;
 		vec3							_direction;
@@ -42,6 +45,8 @@ class Member {
 		std::string getName();
 		std::map<std::string, Limit> &getDegreeLock(void);
 		void printName();
+
+		void update(void *param);
 };
 
 #endif
