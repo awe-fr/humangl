@@ -60,42 +60,21 @@ void Member::setDegree(float x, float y, float z) {
 	this->_degree.z = z;
 }
 
+mat4 inverse(mat4 m);
+
+void printMat(mat4 m) {
+	for (int i = 0; i < 4; i++) {
+		for (int y = 0; y < 4; y++) {
+			std::cout << m.data[i][y] << " ";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+
 void Member::computeTravel() {
 	this->_model = identityMat(1);
-	
-	// if (this->_name == "lhipjoint") {
-	// 	this->_model.data[0][0] = -0.5001f;
-	// 	this->_model.data[0][1] = 0.6556f;
-	// 	this->_model.data[0][2] = -0.5657f;
-	// 	this->_model.data[1][0] = -0.6556f;
-	// 	this->_model.data[1][1] = -0.7134f;
-	// 	this->_model.data[1][2] = -0.2472f;
-	// 	this->_model.data[2][0] = -0.5657f;
-	// 	this->_model.data[2][1] = 0.2472f;
-	// 	this->_model.data[2][2] = 0.7867f;
-	// }
-	// else if (this->_name == "rhipjoint"){
-	// 	this->_model.data[0][0] = -0.4829f;
-	// 	this->_model.data[0][1] = -0.6451f;
-	// 	this->_model.data[0][2] = -0.5912f;
-	// 	this->_model.data[1][0] = 0.6451f;
-	// 	this->_model.data[1][1] = -0.7220f;
-	// 	this->_model.data[1][2] = 0.2502f;
-	// 	this->_model.data[2][0] = 0.5912f;
-	// 	this->_model.data[2][1] = 0.2502f;
-	// 	this->_model.data[2][2] = -0.7677f;
-	// }
-	// else if (this->_name == "lowerback"){
-	// 	this->_model.data[0][0] = 0.999953f;
-	// 	this->_model.data[0][1] = 0.00967f;
-	// 	this->_model.data[0][2] = 0.000336f;
-	// 	this->_model.data[1][0] = -0.00967f;
-	// 	this->_model.data[1][1] = 0.99753f;
-	// 	this->_model.data[1][2] = 0.06952f;
-	// 	this->_model.data[2][0] = 0.000336f;
-	// 	this->_model.data[2][1] = -0.06952f;
-	// 	this->_model.data[2][2] = 0.99753f;
-	// }
+
 	if (this->_previous != nullptr) {
 		this->_model = this->_previous->_model;
 		// mat4 prev = translationMat(this->_direction.x * this->_length, 
@@ -107,11 +86,14 @@ void Member::computeTravel() {
 		// this->_model = matMult(this->_model, translationMat(this->_previous->_direction.x * this->_previous->_length, 
 		// 													this->_previous->_direction.y * this->_previous->_length, 
 		// 													this->_previous->_direction.z * this->_previous->_length));
-		this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 		// this->_model = matMult(this->_model,quatMat(this->_direction));
+		this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
+		// std::cout << this->_name << std::endl;
+		this->_model = matMult(this->_model, upcastmat3(quatMat(this->_direction, this->_previous->_direction)));
+		// std::cout << this->_previous->_direction.x << " " << this->_previous->_direction.y << " " << this->_previous->_direction.z << std::endl;
 	}
 	else if (this->_root != nullptr) {
-		this->_model = quatMat(this->_direction);
+		this->_model = upcastmat3(quatMat(this->_direction, {0,1,0}));
 		// this->_model = this->_root->getModel();
 		// this->_model = directionMat(this->_direction);
 		// this->_model = matMult(this->_model, translationMat(this->_direction.x * this->_length, 
@@ -119,9 +101,16 @@ void Member::computeTravel() {
 		// 													this->_direction.z * this->_length));
 		// this->_model = matMult(this->_model, translationMat(0, this->_previous->_length, 0));
 	}
+	if (this->_previous != nullptr)
+		std::cout << this->_name << " : " << this->_direction.x << " " << this->_direction.y << " " << this->_direction.z << std::endl;
+	else 
+		std::cout << this->_name << std::endl;
+	// printMat(this->_model);
+	// printMat(inverse(this->_model));
 	// this->_model = matMult(this->_model, rotationMatX(this->_degree.x));
 	// this->_model = matMult(this->_model, rotationMatY(this->_degree.y));
 	// this->_model = matMult(this->_model, rotationMatZ(this->_degree.z));
+
 }
 
 void Member::setPrevious(Member *p) {

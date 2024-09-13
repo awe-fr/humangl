@@ -166,10 +166,12 @@ mat4 upcastmat3(mat3 toUp) {
 	return (matrix);
 }
 #include <iostream>
-mat4 quatMat(vec3 dir) {
+mat3 quatMat(vec3 dir, vec3 orr) {
 	vec3 Ndir = vecNormalize(dir);
-	vec3 Nup = vecNormalize({0,1,0});
-	vec3 NrotAxis = vecNormalize(vecCross(Nup, Ndir));
+	vec3 Nup = vecNormalize(orr);
+	vec3 NrotAxis = vecCross(Nup, Ndir);
+	if (NrotAxis.x != 0 || NrotAxis.y != 0 || NrotAxis.z != 0)
+		NrotAxis = vecNormalize(NrotAxis);
 	float angle = acos(vecDot(Nup, Ndir));
 	float Sangle = sin(angle);
 	float Cangle = cos(angle);
@@ -183,6 +185,16 @@ mat4 quatMat(vec3 dir) {
 	K.data[2][0] = -NrotAxis.y;
 	K.data[2][1] = NrotAxis.x;
 
+	// std::cout << vecCross(Nup, Ndir).x << " " << vecCross(Nup, Ndir).y << " " << vecCross(Nup, Ndir).z << std::endl;
+
+	// for (int y = 0; y < 3; y++) {
+	// 	for (int x = 0; x < 3; x++) {
+	// 		std::cout << K.data[y][x] << " ";
+	// 	}
+	// 	std::cout << std::endl;
+	// }
+	// std::cout << std::endl;
+
 	mat3 K2 = matMult3(K, K);
 
 	mat3 sinK = matMult3Float(K, Sangle);
@@ -190,15 +202,7 @@ mat4 quatMat(vec3 dir) {
 
 	mat3 R = matadd3(identityMat3(1), matadd3(sinK, cosK2));
 
-	mat4 M = upcastmat3(R);
-
-	return (M);
-	// for (int y = 0; y < 3; y++) {
-	// 	for (int x = 0; x < 3; x++) {
-	// 		std::cout << K.data[y][x] << " ";
-	// 	}
-	// 	std::cout << std::endl;
-	// }
+	return (R);
 	// std::cout << " ---- " << std::endl;
 	// for (int y = 0; y < 3; y++) {
 	// 	for (int x = 0; x < 3; x++) {

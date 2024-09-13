@@ -28,10 +28,6 @@ int main(void) {
 	MemberList *inst = MemberList::getInstance();
 	std::vector<Member *> lst = inst->getList();
 
-	for (int i = 0; i < lst.size(); i++) {
-		lst[i]->printName();
-	}
-
 	Animation *walk = input_parser.getAnimation();
 	walk->setRoot(input_parser.getRoot());
 
@@ -51,21 +47,21 @@ int main(void) {
 		for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 			(*it)->computeTravel();
 
-		// Root *test = input_parser.getRoot();
-		// mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), test->getModel()));
-		// populateMat(mvpPopulated, MVP);
-		// GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
-		// glUniformMatrix4fv(mvp, 1, GL_FALSE, mvpPopulated);
+		Root *test = input_parser.getRoot();
+		mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), test->getModel()));
+		populateMat(mvpPopulated, MVP);
+		GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
+		glUniformMatrix4fv(mvp, 1, GL_FALSE, mvpPopulated);
 		
-		// GLuint colorvec = glGetUniformLocation(app->getProgramID(), "cvec");
-		// glUniform4fv(colorvec, 1, vec4Populated);
+		GLuint colorvec = glGetUniformLocation(app->getProgramID(), "cvec");
+		glUniform4fv(colorvec, 1, vec4Populated);
 
-		// glBindVertexArray(test->getVAO());
+		glBindVertexArray(test->getVAO());
 
-		// glEnableVertexAttribArray(0);
-		// glBindBuffer(GL_ARRAY_BUFFER, test->getVBO());
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test->getIBO());
-		// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, test->getVBO());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test->getIBO());
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
