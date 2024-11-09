@@ -5,6 +5,13 @@
 
 # define DEG2RAD acos(-1.0f) / 180.0f
 
+struct quat {
+	float w;
+	float x;
+	float y;
+	float z;
+};
+
 struct mat4 {
 	float data[4][4];	
 };
@@ -26,7 +33,17 @@ struct vec3 {
 	float z;
 };
 
+quat eulerToQuat(float roll, float pitch, float yaw);
+quat quatMat2(vec3 dir, vec3 orr);
+quat quatMult(quat a, quat b);
+quat quatNormalize(quat q);
+
 mat4 directionMat(vec3 direction);
+mat4 matInverse(mat4 matrix);
+float det2(float a, float b, float c, float d);
+float det3(float a, float b, float c, float d, float e, float f, float g, float h, float i);
+mat4 matComplementary(float a, float b, float c, float d, float e, float f, float g, float h, float i);
+mat4 comatrix(mat4 a);
 mat4 matMult(mat4 a, mat4 b);
 mat4 identityMat(float id);
 mat4 scaletyMat(float x, float y, float z);
@@ -38,7 +55,10 @@ mat4 rotationMatX(float degree);
 mat4 rotationMatZ(float degree);
 mat4 upcastmat3(mat3 toUp);
 void populateMat(float buf[16], mat4 m);
+mat4 transposemat(mat4 to_inv);
+void printMat(mat4 m);
 
+mat3 quatToMat(quat q);
 mat3 quatMat(vec3 dir, vec3 orr);
 mat3 matMult3Float(mat3 mat, float num);
 mat3 matMult3(mat3 a, mat3 b);

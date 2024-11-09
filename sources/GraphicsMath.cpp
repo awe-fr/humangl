@@ -1,5 +1,172 @@
 #include "./../includes/GraphicsMath.h"
 
+#include <iostream>
+float det2(float a, float b, float c, float d) {
+    return (a * d - c * b);
+}
+
+float det3(float a, float b, float c, float d, float e, float f, float g, float h, float i) {
+    float d1 = det2(e, f, h, i);
+    float d2 = det2(d, f, g, i);
+    float d3 = det2(d, e, g, h);
+
+	// std::cout << a * d1 - b * d2 + c * d3 << std::endl;
+    return (a * d1 - b * d2 + c * d3);
+}
+
+mat4 matComplementary(float a, float b, float c, float d, float e, float f, float g, float h, float i) {
+	mat4 matrix = identityMat(1);
+	matrix.data[0][0] = det2(e, f, h, i);
+	matrix.data[0][1] = det2(d, f, g, i);
+	matrix.data[0][2] = det2(d, e, g, h);
+
+	matrix.data[1][0] = det2(b, c, h, i);
+	matrix.data[1][1] = det2(a, c, g, i);
+	matrix.data[1][2] = det2(a, b, g, h);
+
+	matrix.data[2][0] = det2(b, c, e, f);
+	matrix.data[2][1] = det2(a, c, d, f);
+	matrix.data[2][2] = det2(a, b, d, e);
+
+	return (matrix);
+}
+
+mat4 comatrix(mat4 a) {
+	a.data[0][1] *= -1;
+
+	a.data[1][0] *= -1;
+	a.data[1][2] *= -1;
+
+	a.data[2][1] *= -1;
+
+	return (a);
+} 
+
+mat4 matInverse(mat4 a) {
+	float matDet = det3(a.data[0][0], a.data[0][1], a.data[0][2], a.data[1][0], a.data[1][1], a.data[1][2], a.data[2][0], a.data[2][1], a.data[2][2]);
+	mat4 matCompl = matComplementary(a.data[0][0], a.data[0][1], a.data[0][2], a.data[1][0], a.data[1][1], a.data[1][2], a.data[2][0], a.data[2][1], a.data[2][2]);
+	mat4 coMat = comatrix(matCompl);
+	mat4 matCompose = transposemat(coMat);
+
+	matCompose.data[0][0] *= (1/matDet);
+	matCompose.data[0][1] *= (1/matDet);
+	matCompose.data[0][2] *= (1/matDet);
+
+	matCompose.data[1][0] *= (1/matDet);
+	matCompose.data[1][1] *= (1/matDet);
+	matCompose.data[1][2] *= (1/matDet);
+
+	matCompose.data[2][0] *= (1/matDet);
+	matCompose.data[2][1] *= (1/matDet);
+	matCompose.data[2][2] *= (1/matDet);
+
+	// printMat(coMat);
+	// printMat(matCompose);
+	
+	return (matCompose); //cahnge return
+}
+
+quat quatNormalize(quat q) {
+    float length = sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
+    if (length == 0.0f) return quat{1.0f, 0.0f, 0.0f, 0.0f}; // Par sécurité, renvoyer un quaternion identité si la norme est zéro
+    return quat{q.w / length, q.x / length, q.y / length, q.z / length};
+}
+
+mat3 quatToMat(quat q) {
+	mat3 mat;
+
+	mat.data[0][0] = 1.0f - 2.0f * (q.y * q.y) - 2.0f * (q.z * q.z);
+	mat.data[0][1] = 2.0f * q.x * q.y - 2.0f * q.z * q.w;
+	mat.data[0][2] = 2.0f * q.x * q.z + 2.0f * q.y * q.w;
+
+	mat.data[1][0] = 2 * q.x * q.y + 2.0f * q.z * q.w;
+	mat.data[1][1] = 1.0f - 2.0f * (q.x * q.x) - 2.0f * (q.z * q.z);
+	mat.data[1][2] = 2.0f * q.y * q.z - 2.0f * q.x * q.w;
+
+	mat.data[2][0] = 2.0f * q.x * q.z - 2.0f * q.y * q.w;
+	mat.data[2][1] = 2.0f * q.y * q.z + 2.0f * q.x * q.w;
+	mat.data[2][2] = 1.0f - 2.0f * (q.x * q.x) - 2.0f * (q.y * q.y);
+
+	return(mat);
+}
+
+quat eulerToQuat(float roll, float pitch, float yaw) {
+    float cy = cos(yaw * 0.5f);
+    float sy = sin(yaw * 0.5f);
+    float cp = cos(pitch * 0.5f);
+    float sp = sin(pitch * 0.5f);
+    float cr = cos(roll * 0.5f);
+    float sr = sin(roll * 0.5f);
+
+	quat ret;
+    ret.w = cr * cp * cy + sr * sp * sy;
+    ret.x = sr * cp * cy - cr * sp * sy;
+    ret.y = cr * sp * cy + sr * cp * sy;
+    ret.z = cr * cp * sy - sr * sp * cy;
+
+    return (ret);
+}
+
+quat quatMult(quat a, quat b) {
+	quat ret;
+	ret.w = a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z;  // 1
+    ret.x = a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y;  // i
+    ret.y = a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x;  // j
+    ret.z = a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w;
+
+	return (quatNormalize(ret));
+}
+
+quat quatMat2(vec3 dir, vec3 orr) {
+    // Normalize the direction and up vectors
+	quat ret;
+    vec3 Ndir = vecNormalize(dir);
+    vec3 Nup = vecNormalize(orr);
+    
+    // Compute the axis of rotation (cross product of dir and up)
+    vec3 NrotAxis = vecCross(Nup, Ndir);
+    
+    // If the vectors are parallel (cross product is zero), return the identity quaternion
+    if (NrotAxis.x == 0 && NrotAxis.y == 0 && NrotAxis.z == 0) {
+		ret.w = 1; ret.x = 0; ret.y = 0; ret.z = 0;
+        return (ret); // Identity quaternion (no rotation)
+    }
+    
+    // Normalize the axis of rotation
+    NrotAxis = vecNormalize(NrotAxis);
+    
+    // Calculate the angle between the two vectors (dir and up)
+    float angle = acos(vecDot(Nup, Ndir));
+    
+    // Half-angle
+    float halfAngle = angle * 0.5f;
+    float sinHalfAngle = sin(halfAngle);
+    float cosHalfAngle = cos(halfAngle);
+    
+    // Construct the quaternion from the axis of rotation and angle
+	ret.w = cosHalfAngle;
+	ret.x = NrotAxis.x * sinHalfAngle;
+	ret.y = NrotAxis.y * sinHalfAngle;
+	ret.z = NrotAxis.z * sinHalfAngle;
+    
+    return (ret);
+}
+
+
+
+
+
+
+void printMat(mat4 m) {
+	for (int i = 0; i < 4; i++) {
+		for (int y = 0; y < 4; y++) {
+			std::cout << m.data[i][y] << " ";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+
 mat4 directionMat(vec3 direction) {
 	mat4 matrix = identityMat(1);
 
@@ -172,6 +339,8 @@ mat3 quatMat(vec3 dir, vec3 orr) {
 	vec3 NrotAxis = vecCross(Nup, Ndir);
 	if (NrotAxis.x != 0 || NrotAxis.y != 0 || NrotAxis.z != 0)
 		NrotAxis = vecNormalize(NrotAxis);
+	else
+		return (identityMat3(1));
 	float angle = acos(vecDot(Nup, Ndir));
 	float Sangle = sin(angle);
 	float Cangle = cos(angle);
@@ -185,15 +354,6 @@ mat3 quatMat(vec3 dir, vec3 orr) {
 	K.data[2][0] = -NrotAxis.y;
 	K.data[2][1] = NrotAxis.x;
 
-	// std::cout << vecCross(Nup, Ndir).x << " " << vecCross(Nup, Ndir).y << " " << vecCross(Nup, Ndir).z << std::endl;
-
-	// for (int y = 0; y < 3; y++) {
-	// 	for (int x = 0; x < 3; x++) {
-	// 		std::cout << K.data[y][x] << " ";
-	// 	}
-	// 	std::cout << std::endl;
-	// }
-	// std::cout << std::endl;
 
 	mat3 K2 = matMult3(K, K);
 
@@ -215,6 +375,18 @@ mat3 quatMat(vec3 dir, vec3 orr) {
 
 	// std::cout << angle << std::endl;
 	// std::cout << NrotAxis.x << " " << NrotAxis.y << " " << NrotAxis.z << std::endl;
+}
+
+mat4 transposemat(mat4 to_inv) {
+	mat4 matrix = to_inv;
+
+	for (int i = 0; i < 3; i++) {
+		for (int y = 0; y < 3; y++) {
+			matrix.data[i][y] = to_inv.data[y][i];
+		}
+	}
+
+	return (matrix);
 }
 
 mat3 matMult3Float(mat3 mat, float num) {
