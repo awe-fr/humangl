@@ -1,17 +1,23 @@
 #include "../includes/WindowApp.hpp"
 #include "../includes/Member.hpp"
-#include "../includes/InputParser.hpp"
+// #include "../includes/InputParser.hpp"
+#include "../includes/BVHParser.hpp"
 #include "../includes/Singleton.hpp"
-#include "../includes/Animation.hpp"
+// #include "../includes/Animation.hpp"
 #include "../includes/ImguiValues.hpp"
 
 int main(void) {
-	InputParser input_parser("animations/asf/02.asf", "animations/amc/walk.amc");
-	input_parser.parseASF();
-	input_parser.parseAMC();
+	// InputParser input_parser("animations/asf/02.asf", "animations/amc/walk.amc");
+	// input_parser.parseASF();
+	// input_parser.parseAMC();
 
 	WindowsApp *app = new WindowsApp();
-	input_parser.buildMembers();
+
+	BVHParser bvhparser("animations/bvh/test.bvh");
+	if (bvhparser.parseVBH() == false) {
+		return -1;
+	}
+	// input_parser.buildMembers();
 
 	vec4 color; color.x = 0.33; color.y = 0.33; color.z = 0.33; color.w = 1;
 
@@ -38,8 +44,8 @@ int main(void) {
 	// 	lst[i]->printName();
 	// }
 
-	Animation *walk = input_parser.getAnimation();
-	walk->setRoot(input_parser.getRoot());
+	// Animation *walk = input_parser.getAnimation();
+	// walk->setRoot(input_parser.getRoot());
 
 	while(app->isClosed() != true) {
 
@@ -59,24 +65,24 @@ int main(void) {
 		for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 			(*it)->computeTravel();
 
-		Root *test = input_parser.getRoot();
-		mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), test->getModel()));
-		populateMat(mvpPopulated, MVP);
-		GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
-		glUniformMatrix4fv(mvp, 1, GL_FALSE, mvpPopulated);
+		// Root *test = input_parser.getRoot();
+		// mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), test->getModel()));
+		// populateMat(mvpPopulated, MVP);
+		// GLuint mvp = glGetUniformLocation(app->getProgramID(), "MVP");
+		// glUniformMatrix4fv(mvp, 1, GL_FALSE, mvpPopulated);
 		
-		GLuint colorvec = glGetUniformLocation(app->getProgramID(), "cvec");
-		glUniform4fv(colorvec, 1, vec4Populated);
+		// GLuint colorvec = glGetUniformLocation(app->getProgramID(), "cvec");
+		// glUniform4fv(colorvec, 1, vec4Populated);
 
-		glBindVertexArray(test->getVAO());
+		// glBindVertexArray(test->getVAO());
 
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, test->getVBO());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test->getIBO());
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		// glEnableVertexAttribArray(0);
+		// glBindBuffer(GL_ARRAY_BUFFER, test->getVBO());
+		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test->getIBO());
+		// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(0);
+		// glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		// glDisableVertexAttribArray(0);
 
 		for (int i = 0; i < lst.size(); i++) {
 			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), lst[i]->getModel()));

@@ -22,7 +22,7 @@ class Root
 		GLuint _vbo;
 		GLuint _ibo;
 	public:
-		Root(std::vector<std::string> order, vec3 position, vec3 orientation);
+		Root(std::vector<std::string> order);
 		~Root(void);
 		GLuint getVAO();
 		GLuint getVBO();
