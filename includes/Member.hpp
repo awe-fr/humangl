@@ -32,7 +32,7 @@ class Member : public IObserver {
 		GLuint _vbo;
 		GLuint _ibo;
 	public:
-		Member(std::string name, vec3 direction, float length, vec3 degree, std::map<std::string, Limit> degree_lock, Member *previous, Root *root);
+		Member(std::string name, vec3 direction, float length, vec3 degree, Member *previous, Root *root);
 		~Member();
 		void computeTravel();
 		void setPrevious(Member *p);

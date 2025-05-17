@@ -1,8 +1,8 @@
 #include "../includes/Member.hpp"
 #include "../includes/ImguiValues.hpp"
 
-Member::Member(std::string name, vec3 direction, float length, vec3 degree, std::map<std::string, Limit> degree_lock, Member *previous, Root *root) :
-				_name(name), _direction(direction), _length(length), _base_length(length), _degree(degree), _degreeLock(degree_lock), _previous(previous), _root(root)
+Member::Member(std::string name, vec3 direction, float length, vec3 degree, Member *previous, Root *root) :
+				_name(name), _direction(direction), _length(length), _base_length(length), _degree(degree), _previous(previous), _root(root)
 {
 	this->_model = identityMat(1);
 

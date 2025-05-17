@@ -9,6 +9,7 @@
 # include "GraphicsMath.h"
 # include "Root.hpp"
 # include "Member.hpp"
+# include "Singleton.hpp"
 
 class BVHParser {
 	private:

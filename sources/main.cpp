@@ -40,9 +40,10 @@ int main(void) {
 	for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 		(*it)->attach(&imgui_values);
 
-	// for (int i = 0; i < lst.size(); i++) {
-	// 	lst[i]->printName();
-	// }
+	for (int i = 0; i < lst.size(); i++) {
+		lst[i]->printName();
+	}
+	// std::cout << lst.size() << std::endl;
 
 	// Animation *walk = input_parser.getAnimation();
 	// walk->setRoot(input_parser.getRoot());
