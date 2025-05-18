@@ -40,9 +40,9 @@ int main(void) {
 	for (std::vector<Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 		(*it)->attach(&imgui_values);
 
-	for (int i = 0; i < lst.size(); i++) {
-		lst[i]->printName();
-	}
+	// for (int i = 0; i < lst.size(); i++) {
+	// 	lst[i]->printName();
+	// }
 	// std::cout << lst.size() << std::endl;
 
 	// Animation *walk = input_parser.getAnimation();
@@ -51,6 +51,8 @@ int main(void) {
 	while(app->isClosed() != true) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		bvhparser.changeAngle();
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -84,6 +86,7 @@ int main(void) {
 
 		// glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		// glDisableVertexAttribArray(0);
+			
 
 		for (int i = 0; i < lst.size(); i++) {
 			mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), lst[i]->getModel()));

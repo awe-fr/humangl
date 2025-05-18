@@ -16,15 +16,19 @@ class BVHParser {
 		std::string		_bvhPath;
 		std::ifstream	_bvhFile;
 		Root			*_root;
+		std::vector<std::vector<float>> _frames;
 
 		bool	parseHierarchy();
+		bool	parseMotion();
 		bool	parseRoot(std::string name);
 		bool	parseMember(std::string name);
 		bool	parseEndSite();
+
 	public:
 		BVHParser(std::string path);
 		~BVHParser();
 
+		void	changeAngle();
 		bool	parseVBH();
 };
 

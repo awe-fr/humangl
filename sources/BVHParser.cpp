@@ -30,7 +30,7 @@ BVHParser::BVHParser(std::string path) : _bvhPath(path), _root(nullptr) {
 	Member *lwrist = new Member("lwrist", {1, 0, 0}, 1.67777, {0, 0, 0}, lradius, nullptr);
 	Member *lhand = new Member("lhand", {1, 0, 0}, 0.661175, {0, 0, 0}, lwrist, nullptr);
 	Member *lfingers = new Member("lfingers", {1, 0, 0}, 0.533057, {0, 0, 0}, lhand, nullptr);
-	Member *lthumb = new Member("lthumb", {1, 0, 0}, 0.765366, {0, 0, 0}, lfingers, nullptr);
+	Member *lthumb = new Member("lthumb", {1, 0, 0}, 0.765366, {0, 0, 0}, lhand, nullptr);
 
 	Member *rclavicle = new Member("rclavicle", {-0.973174, 0.211421, -0.0907389}, 3.59444, {0, 0, 0}, thorax, nullptr);
 	Member *rhumerus = new Member("rhumerus", {-1, 0, 0}, 5.02649, {0, 0, 0}, rclavicle, nullptr);
@@ -38,7 +38,7 @@ BVHParser::BVHParser(std::string path) : _bvhPath(path), _root(nullptr) {
 	Member *rwrist = new Member("rwrist", {-1, 0, 0}, 1.68216, {0, 0, 0}, rradius, nullptr);
 	Member *rhand = new Member("rhand", {-1, 0, 0}, 0.730406, {0, 0, 0}, rwrist, nullptr);
 	Member *rfingers = new Member("rfingers", {-1, 0, 0}, 0.588872, {0, 0, 0}, rhand, nullptr);
-	Member *rthumb = new Member("rthumb", {-1, 0, 0}, 0.845506, {0, 0, 0}, rfingers, nullptr);
+	Member *rthumb = new Member("rthumb", {-1, 0, 0}, 0.845506, {0, 0, 0}, rhand, nullptr);
 
 	inst->add(lhipjoint);
 	inst->add(lfemur);
@@ -132,11 +132,45 @@ bool	BVHParser::parseVBH() {
 			std::cout << splitted[0] << std::endl;
 			return (parseHierarchy());
 		} else if (splitted[0] == "MOTION") {
-			
+			return (parseMotion());
 		}
 	}
 	std::cout << "28" << std::endl;
 	return false;
+}
+
+bool	BVHParser::parseMotion() {
+	std::string line;
+	std::vector<std::string> splitted;
+	std::vector<float> frame;
+
+	std::getline(this->_bvhFile, line);
+	std::getline(this->_bvhFile, line);
+	while(std::getline(this->_bvhFile, line)) {
+		frame.clear();
+		splitted = split(line);
+		for (int i = 6; i < splitted.size(); i++) {
+			frame.push_back(std::stof(splitted[i]));
+			// std::cout << std::stof(splitted[i]) << " ";
+		}
+		this->_frames.push_back(frame);
+		// std::cout << std::endl;
+	}
+	return true;
+}
+
+void	BVHParser::changeAngle() {
+	static int count = 0;
+	MemberList *inst = MemberList::getInstance();
+	std::vector<Member *> lst = inst->getList();
+	std::vector<float> line = this->_frames[count];
+
+	for (int i = 0; i < lst.size(); i += 1) {
+		lst[i]->setDegree(line[i * 3], line[(i * 3) + 1], line[(i * 3) + 2]);
+	}
+	count++;
+	if (count == 298)
+		count = 0;
 }
 
 bool	BVHParser::parseHierarchy() {
