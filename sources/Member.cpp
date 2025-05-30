@@ -16,6 +16,17 @@ Member::Member(std::string name, vec3 direction, float length, vec3 degree, std:
 	this->_vertex[18] = MEMBER_BASE_WIDTH_START;	this->_vertex[19] = 0;      this->_vertex[20] = MEMBER_BASE_WIDTH_START;
 	this->_vertex[21] = -MEMBER_BASE_WIDTH_START;	this->_vertex[22] = 0;      this->_vertex[23] = MEMBER_BASE_WIDTH_START;
 
+	if (name == "head") {
+		this->_vertex[0] = length / 2;		this->_vertex[1] = length;  this->_vertex[2] = length / 2;
+		this->_vertex[3] = -length / 2;		this->_vertex[4] = length;  this->_vertex[5] = -length / 2;
+		this->_vertex[6] = -length / 2;		this->_vertex[7] = length;  this->_vertex[8] = length / 2;
+		this->_vertex[9] = length / 2;		this->_vertex[10] = 0;      this->_vertex[11] = -length / 2;
+		this->_vertex[12] = -length / 2;	this->_vertex[13] = 0;      this->_vertex[14] = -length / 2;
+		this->_vertex[15] = length / 2;   	this->_vertex[16] = length; this->_vertex[17] = -length / 2;
+		this->_vertex[18] = length / 2;	this->_vertex[19] = 0;      this->_vertex[20] = length / 2;
+		this->_vertex[21] = -length / 2;	this->_vertex[22] = 0;      this->_vertex[23] = length / 2;
+	}
+
 	this->_index = new int[sizeof(int) * 36];
 	this->_index[0] = 0;  this->_index[1] = 1;  this->_index[2] = 2;
 	this->_index[3] = 1;  this->_index[4] = 3;  this->_index[5] = 4;
@@ -318,34 +329,68 @@ void Member::update(void *param)
 	switch (ratio->type)
 	{
 		case Length:
-			this->_length = ratio->value * this->_base_length;
+			if (this->_name != "head") {
 
-			this->_vertex[1] = this->_length;
-			this->_vertex[4] = this->_length;
-			this->_vertex[7] = this->_length;
-			this->_vertex[16] = this->_length;
+				this->_length = ratio->value * this->_base_length;
+				
+				this->_vertex[1] = this->_length;
+				this->_vertex[4] = this->_length;
+				this->_vertex[7] = this->_length;
+				this->_vertex[16] = this->_length;
+			}
 			break;
 
 		case Width:
-			this->_vertex[9] = ratio->value * MEMBER_BASE_WIDTH_START;
-			this->_vertex[12] = ratio->value * (-MEMBER_BASE_WIDTH_START);
-			this->_vertex[18] = ratio->value * MEMBER_BASE_WIDTH_START;
-			this->_vertex[21] = ratio->value * (-MEMBER_BASE_WIDTH_START);
-			this->_vertex[11] = ratio->value * (-MEMBER_BASE_WIDTH_START);
-			this->_vertex[14] = ratio->value * (-MEMBER_BASE_WIDTH_START);
-			this->_vertex[20] = ratio->value * MEMBER_BASE_WIDTH_START;
-			this->_vertex[23] = ratio->value * MEMBER_BASE_WIDTH_START;
+			if (this->_name != "head") {
+				this->_vertex[9] = ratio->value * MEMBER_BASE_WIDTH_START;
+				this->_vertex[12] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[18] = ratio->value * MEMBER_BASE_WIDTH_START;
+				this->_vertex[21] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[11] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[14] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[20] = ratio->value * MEMBER_BASE_WIDTH_START;
+				this->_vertex[23] = ratio->value * MEMBER_BASE_WIDTH_START;
 
-			this->_vertex[0] = ratio->value * MEMBER_BASE_WIDTH_END;
-			this->_vertex[3] = ratio->value * (-MEMBER_BASE_WIDTH_END);
-			this->_vertex[6] = ratio->value * (-MEMBER_BASE_WIDTH_END);
-			this->_vertex[15] = ratio->value * MEMBER_BASE_WIDTH_END;
-			this->_vertex[2] = ratio->value * MEMBER_BASE_WIDTH_END;
-			this->_vertex[5] = ratio->value * (-MEMBER_BASE_WIDTH_END);
-			this->_vertex[8] = ratio->value * MEMBER_BASE_WIDTH_END;
-			this->_vertex[17] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[0] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[3] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[6] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[15] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[2] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[5] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[8] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[17] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+			}
 			break;
 		
+		case Head_size:
+			if (this->_name == "head") {
+				this->_length = ratio->value * this->_base_length;
+				
+				this->_vertex[1] = this->_length;
+				this->_vertex[4] = this->_length;
+				this->_vertex[7] = this->_length;
+				this->_vertex[16] = this->_length;
+				
+				this->_vertex[9] = this->_length / 2;
+				this->_vertex[12] = -this->_length / 2;
+				this->_vertex[18] = this->_length / 2;
+				this->_vertex[21] = -this->_length / 2;
+				this->_vertex[11] = -this->_length / 2;
+				this->_vertex[14] = -this->_length / 2;
+				this->_vertex[20] = this->_length / 2;
+				this->_vertex[23] = this->_length / 2;
+
+				this->_vertex[0] = this->_length / 2;
+				this->_vertex[3] = -this->_length / 2;
+				this->_vertex[6] = -this->_length / 2;
+				this->_vertex[15] = this->_length / 2;
+				this->_vertex[2] = this->_length / 2;
+				this->_vertex[5] = -this->_length / 2;
+				this->_vertex[8] = this->_length / 2;
+				this->_vertex[17] = -this->_length / 2;
+			}
+			break;
+
 		default:
 			break;
 	}

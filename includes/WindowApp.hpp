@@ -15,8 +15,8 @@
 
 # include "./GraphicsMath.h"
 
-# define WIDTH 1920
-# define HEIGHT 1080
+# define WIDTH 720
+# define HEIGHT 480
 
 
 class WindowsApp {

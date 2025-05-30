@@ -1,10 +1,8 @@
 #include "../includes/ImguiValues.hpp"
 
-ImguiValues::ImguiValues(void) : _length(1), _width(1), _prev_length(1), _prev_width(1) {}
+ImguiValues::ImguiValues(void) : _length(1), _width(1), _prev_length(1), _prev_width(1), _head_size(1), _prev_head_size(1) {}
 
 ImguiValues::~ImguiValues(void) {}
-
-
 
 float *ImguiValues::getLength(void)
 {
@@ -16,7 +14,9 @@ float *ImguiValues::getWidth(void)
 	return &this->_width;
 }
 
-
+float *ImguiValues::getHeadSize(void) {
+	return &this->_head_size;
+}
 
 void ImguiValues::notify(void)
 {
@@ -43,5 +43,17 @@ void ImguiValues::notify(void)
 			(*it)->update(&param);
 
 		this->_prev_width = this->_width;
+	}
+
+	if (this->_prev_head_size != this->_head_size)
+	{
+		Param param;
+		param.type = Head_size;
+		param.value = this->_head_size;
+
+		for (std::vector<IObserver *>::iterator it = this->_subscribers.begin(); it != this->_subscribers.end(); it++)
+			(*it)->update(&param);
+
+		this->_prev_head_size = this->_head_size;
 	}
 }

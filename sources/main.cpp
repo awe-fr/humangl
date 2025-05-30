@@ -98,11 +98,12 @@ int main(void) {
 			glDisableVertexAttribArray(0);
 		}
 
-		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(250, 125), ImGuiCond_FirstUseEver);
 		ImGui::Begin("HumanGL settings");
 
 		ImGui::SliderFloat("Length", imgui_values.getLength(), 0, 5);
 		ImGui::SliderFloat("Width", imgui_values.getWidth(), 0, 5);
+		ImGui::SliderFloat("Head size", imgui_values.getHeadSize(), 0, 5);
 
 		ImGui::ColorEdit3("color", vec4Populated);
 
