@@ -329,6 +329,7 @@ void BVHAnimation::ParseMember(std::ifstream &file, BVHAnimation::Member &member
 			this->_members.push_back(child);
 
 			ParseMember(file, *child);
+
 			is_joint = true;
 			continue;
 		}
@@ -369,11 +370,14 @@ void BVHAnimation::ParseMember(std::ifstream &file, BVHAnimation::Member &member
 				throw Exception(IncompleteFile());
 
 			ParseBracket(file, '}');
+			getline(file, line);
+			this->_nb_line++;
+			trim(line);
 			break;
 		}
 		else if (!is_joint)
 			throw Exception(MissingKeyException("End Site"));
-
+		
 		is_complete = true;
 		break;
 	}
@@ -381,7 +385,8 @@ void BVHAnimation::ParseMember(std::ifstream &file, BVHAnimation::Member &member
 	if (!is_complete)
 		throw Exception(IncompleteFile());
 
-	ParseBracket(file, '}');
+	if (line != "}")
+		throw Exception(MissingRightBracket());
 }
 
 
@@ -409,12 +414,13 @@ void BVHAnimation::ParseAnimation(std::ifstream &file)
 				break;
 
 			size_t j = 0;
-			while (j < line.length() && line[j] != ' ' && line[j] == '\t' && line[j] == '\n' && line[j] == '\r')
+			while (j < line.length() && line[j] != ' ' && line[j] != '\t' && line[j] != '\n' && line[j] != '\r')
 				j++;
 
 			frame.push_back(ParseFloat(line.substr(0, j)));
 
 			line = line.substr(j);
+			i++;
 		}
 
 		trim(line);
