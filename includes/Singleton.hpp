@@ -3,7 +3,7 @@
 
 # include <mutex>
 
-# include "Member.hpp"
+# include "BVHAnimation.hpp"
 
 template <typename T>
 class Singleton {
@@ -55,12 +55,11 @@ class List {
 			}
 		};
 		void cleanup() {
-			for (int i = this->_list.size(); i > 0; i--)
-				delete this->_list[i - 1];
+			this->_list.clear();
 		};
 };
 
-class MemberList : public Singleton<MemberList>, public List<Member>{
+class MemberList : public Singleton<MemberList>, public List<BVHAnimation::Member>{
 	private:
 		MemberList() {};
 		~MemberList() {};
@@ -70,11 +69,11 @@ class MemberList : public Singleton<MemberList>, public List<Member>{
 		friend Singleton;
 
 	public:
-		Member *findByName(std::string name)
+		BVHAnimation::Member *findByName(std::string name)
 		{
-			for (std::vector<Member *>::iterator it = this->_list.begin(); it != this->_list.end(); it++)
+			for (std::vector<BVHAnimation::Member *>::iterator it = this->_list.begin(); it != this->_list.end(); it++)
 			{
-				if ((*it)->getName() == name)
+				if ((*it)->GetName() == name)
 					return *it;
 			}
 

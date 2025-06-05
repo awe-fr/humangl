@@ -67,7 +67,7 @@ mat4 matInverse(mat4 a) {
 }
 
 quat quatNormalize(quat q) {
-    float length = sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
+    float length = sqrtf(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
     if (length == 0.0f) return quat{1.0f, 0.0f, 0.0f, 0.0f}; // Par sécurité, renvoyer un quaternion identité si la norme est zéro
     return quat{q.w / length, q.x / length, q.y / length, q.z / length};
 }
@@ -332,7 +332,7 @@ mat4 upcastmat3(mat3 toUp) {
 	
 	return (matrix);
 }
-#include <iostream>
+
 mat3 quatMat(vec3 dir, vec3 orr) {
 	vec3 Ndir = vecNormalize(dir);
 	vec3 Nup = vecNormalize(orr);
@@ -363,18 +363,6 @@ mat3 quatMat(vec3 dir, vec3 orr) {
 	mat3 R = matadd3(identityMat3(1), matadd3(sinK, cosK2));
 
 	return (R);
-	// std::cout << " ---- " << std::endl;
-	// for (int y = 0; y < 3; y++) {
-	// 	for (int x = 0; x < 3; x++) {
-	// 		std::cout << R.data[y][x] << " ";
-	// 	}
-	// 	std::cout << std::endl;
-	// }
-	// std::cout << std::endl;
-
-
-	// std::cout << angle << std::endl;
-	// std::cout << NrotAxis.x << " " << NrotAxis.y << " " << NrotAxis.z << std::endl;
 }
 
 mat4 transposemat(mat4 to_inv) {
@@ -465,7 +453,7 @@ vec3 vecCross(vec3 f, vec3 s) {
 vec3 vecNormalize(vec3 f) {
 	vec3 vector;
 
-	float a = sqrt((f.x * f.x) + (f.y * f.y) + (f.z * f.z));
+	float a = sqrtf((f.x * f.x) + (f.y * f.y) + (f.z * f.z));
 
 	vector.x = f.x / a;
 	vector.y = f.y / a;

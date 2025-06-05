@@ -5,11 +5,17 @@
 # include <vector>
 # include <exception>
 # include "GraphicsMath.h"
+# include "WindowApp.hpp"
+# include "Observer.hpp"
+# include "ImguiValues.hpp"
+
+# define MEMBER_BASE_WIDTH_START 0.05f
+# define MEMBER_BASE_WIDTH_END 0.01f
 
 class BVHAnimation
 {
 	public:
-		class Member
+		class Member : public IObserver
 		{
 			public:
 				enum Channel
@@ -25,15 +31,27 @@ class BVHAnimation
 			protected:
 				const std::string		_name;
 				vec3					_offset;
+				vec3					_degree;
 				float					_length;
+				float					_length_ratio;
 				std::vector<Channel>	_channels;
 				std::vector<Member *>	_children;
 				Member *				_parent;
+
+				mat4					_model;
+
+				GLfloat *				_vertex;
+				int *					_index;
+
+				GLuint 					_vao;
+				GLuint 					_vbo;
+				GLuint 					_ibo;
 
 			public:
 				// Constructor
 				Member(std::string name, Member *parent) :
 					_name(name), _parent(parent) {}
+				~Member();
 			
 				// Getters
 				const std::string		GetName(void) { return this->_name; }
@@ -43,14 +61,23 @@ class BVHAnimation
 				float					GetLength(void) { return this->_length; }
 				std::vector<Channel>	GetChannels(void) { return this->_channels; }
 				size_t					GetChannelsNumber(void) {return this->_channels.size(); }
-
+				
 				// Setters
 				void	SetOffset(vec3 offset) { this->_offset = offset; }
-				void	SetLength(float length) { this->_length = length; }
+				void	SetLength(float length) { this->_length = length; this->_length_ratio = length;}
 				void	SetChannels(std::vector<Channel> channels) { this->_channels = channels; }
+				
+				void					computeTravel();
 
+				GLuint 	getVAO();
+				GLuint 	getVBO();
+				GLuint 	getIBO();
+				mat4 	getModel();
 
 				void	AddChild(Member *child) { this->_children.push_back(child); }
+
+				void update(void *param);
+				void initGraphics(void);
 		};
 
 		class Root : public Member
@@ -106,6 +133,7 @@ class BVHAnimation
 		void							ParseBracket(std::ifstream &file, char bracket);
 		size_t							ParseSizeT(std::string str);
 		void							ParseAnimation(std::ifstream &file);
+		void							InitMembersGraphic(void);
 
 	public:
 		// Constructor
@@ -119,6 +147,9 @@ class BVHAnimation
 		const float								GetFrameTime(void) { return this->_frame_time; }
 		const std::vector<std::vector<float>>	GetAnimation(void) { return this->_animation; }
 		const size_t							GetTotalChannelsNumber(void);
+
+		const Root								GetRoot(void) {return this->_root;}
+		const std::vector<Member *>				GetMembers(void) {return this->_members;}
 
 		void	Parse(void);
 };

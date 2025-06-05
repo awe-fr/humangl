@@ -79,7 +79,6 @@ float BVHAnimation::ParseFloat(std::string str)
 				throw Exception(InvalidFloat());
 		}
 	}
-
 	return float(atof(str.c_str()));
 }
 
@@ -170,7 +169,6 @@ vec3 BVHAnimation::ParseOffset(std::string line)
 		line = line.substr(j);
 		i++;
 	}
-
 	trim(line);
 	if (i < 3 || line.length() > 0)
 		throw Exception(InvalidOffset());
@@ -272,14 +270,17 @@ void BVHAnimation::ParseMember(std::ifstream &file, BVHAnimation::Member &member
 			break;
 
 		// Set length
-		float length = sqrtf(powf(offset.x, 2) + powf(offset.y, 2) + powf(offset.z, 2));
+		float length = sqrtf((offset.x * offset.x) + (offset.y * offset.y) + (offset.z * offset.z));
 		parent->SetLength(length);
 
-		// Normalize offset
-		offset.x = offset.x / length;
-		offset.y = offset.y / length;
-		offset.z = offset.z / length;
-
+		// Normalize offset	
+		if (length != 0) {
+			offset.x = offset.x / length;
+			offset.y = offset.y / length;
+			offset.z = offset.z / length;
+		} else {
+			offset = {0, 0, 0};
+		}
 		parent->SetOffset(offset);
 		break;
 	}
@@ -572,6 +573,8 @@ void BVHAnimation::Parse(void)
 	// Animation
 	ParseAnimation(file);
 
+	InitMembersGraphic();
+
 	file.close();
 }
 
@@ -701,4 +704,202 @@ const std::string BVHAnimation::MissingNbFrames(size_t expected, size_t got)
 	message += "Invalid file format. Invalid Animation: Expected " + size_tToString(expected) + ", got " + size_tToString(got) + ".\n";
 
 	return message;
+}
+
+void BVHAnimation::InitMembersGraphic(void) {
+	for (int i = 0; i < this->_members.size(); i++) {
+		this->_members[i]->initGraphics();
+	}
+}
+
+void BVHAnimation::Member::initGraphics(void) {
+	this->_model = identityMat(1);
+
+	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
+	this->_vertex[0] = MEMBER_BASE_WIDTH_END;		this->_vertex[1] = this->_length;  	this->_vertex[2] = MEMBER_BASE_WIDTH_END;
+	this->_vertex[3] = -MEMBER_BASE_WIDTH_END;		this->_vertex[4] = this->_length;  	this->_vertex[5] = -MEMBER_BASE_WIDTH_END;
+	this->_vertex[6] = -MEMBER_BASE_WIDTH_END;		this->_vertex[7] = this->_length;  	this->_vertex[8] = MEMBER_BASE_WIDTH_END;
+	this->_vertex[9] = MEMBER_BASE_WIDTH_START;		this->_vertex[10] = 0;      		this->_vertex[11] = -MEMBER_BASE_WIDTH_START;
+	this->_vertex[12] = -MEMBER_BASE_WIDTH_START;	this->_vertex[13] = 0;      		this->_vertex[14] = -MEMBER_BASE_WIDTH_START;
+	this->_vertex[15] = MEMBER_BASE_WIDTH_END;   	this->_vertex[16] = this->_length; 	this->_vertex[17] = -MEMBER_BASE_WIDTH_END;
+	this->_vertex[18] = MEMBER_BASE_WIDTH_START;	this->_vertex[19] = 0;      		this->_vertex[20] = MEMBER_BASE_WIDTH_START;
+	this->_vertex[21] = -MEMBER_BASE_WIDTH_START;	this->_vertex[22] = 0;      		this->_vertex[23] = MEMBER_BASE_WIDTH_START;
+
+	if (this->_name == "head") {
+		this->_vertex[0] = this->_length / 2;		this->_vertex[1] = this->_length;  this->_vertex[2] = this->_length / 2;
+		this->_vertex[3] = -this->_length / 2;		this->_vertex[4] = this->_length;  this->_vertex[5] = -this->_length / 2;
+		this->_vertex[6] = -this->_length / 2;		this->_vertex[7] = this->_length;  this->_vertex[8] = this->_length / 2;
+		this->_vertex[9] = this->_length / 2;		this->_vertex[10] = 0;      this->_vertex[11] = -this->_length / 2;
+		this->_vertex[12] = -this->_length / 2;	this->_vertex[13] = 0;      this->_vertex[14] = -this->_length / 2;
+		this->_vertex[15] = this->_length / 2;   	this->_vertex[16] = this->_length; this->_vertex[17] = -this->_length / 2;
+		this->_vertex[18] = this->_length / 2;	this->_vertex[19] = 0;      this->_vertex[20] = this->_length / 2;
+		this->_vertex[21] = -this->_length / 2;	this->_vertex[22] = 0;      this->_vertex[23] = this->_length / 2;
+	}
+
+	this->_index = new int[sizeof(int) * 36];
+	this->_index[0] = 0;  this->_index[1] = 1;  this->_index[2] = 2;
+	this->_index[3] = 1;  this->_index[4] = 3;  this->_index[5] = 4;
+	this->_index[6] = 5;  this->_index[7] = 6;  this->_index[8] = 3;
+	this->_index[9] = 7;  this->_index[10] = 3; this->_index[11] = 6;
+	this->_index[12] = 2; this->_index[13] = 4; this->_index[14] = 7;
+	this->_index[15] = 0; this->_index[16] = 7; this->_index[17] = 6;
+	this->_index[18] = 0; this->_index[19] = 5; this->_index[20] = 1;
+	this->_index[21] = 1; this->_index[22] = 5; this->_index[23] = 3;
+	this->_index[24] = 5; this->_index[25] = 0; this->_index[26] = 6;
+	this->_index[27] = 7; this->_index[28] = 4; this->_index[29] = 3;
+	this->_index[30] = 2; this->_index[31] = 1; this->_index[32] = 4;
+	this->_index[33] = 0; this->_index[34] = 2; this->_index[35] = 7;
+
+	glGenVertexArrays(1, &this->_vao);
+	glBindVertexArray(this->_vao);
+
+	glGenBuffers(1, &this->_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24, &this->_vertex[0], GL_STATIC_DRAW);
+
+	glGenBuffers(1, &this->_ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * 36, &this->_index[0], GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	this->_degree = {0,0,0};
+}
+
+void BVHAnimation::Member::computeTravel() {
+	this->_model = identityMat(1);
+
+	if (this->_parent != nullptr && dynamic_cast<Root *>(this->_parent) == nullptr) {
+		this->_model = this->_parent->_model;
+		this->_model = matMult(this->_model, translationMat(0, this->_parent->_length, 0));
+
+		mat4 rev = matInverse(this->_parent->_model);
+		this->_model = matMult(this->_model, rev);
+
+		quat rot;
+		this->_degree.z += this->_parent->_degree.z;
+		this->_degree.y += this->_parent->_degree.y;
+		this->_degree.x += this->_parent->_degree.x;
+		rot = eulerToQuat((this->_degree.z) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.x) * DEG2RAD);
+		rot = eulerToQuat(this->_degree.z * DEG2RAD, this->_degree.y * DEG2RAD, this->_degree.x * DEG2RAD);
+
+		quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
+
+		quat final = quatMult(rot, dir);
+
+		this->_model = matMult(this->_model, upcastmat3(quatToMat(final)));
+	} else if (this->_parent != nullptr && dynamic_cast<Root *>(this->_parent) != nullptr) {
+		// std::cout << this->_offset.x << std::endl;
+		this->_model = upcastmat3(quatMat(this->_offset, {0,1,0}));
+		// printMat(this->_model);
+		return;
+	}
+}
+
+GLuint BVHAnimation::Member::getVAO() {
+	return (this->_vao);
+}
+
+GLuint BVHAnimation::Member::getVBO() {
+	return (this->_vbo);
+}
+
+GLuint BVHAnimation::Member::getIBO() {
+	return (this->_ibo);
+}
+
+mat4 BVHAnimation::Member::getModel() {
+	return (this->_model);
+}
+
+void BVHAnimation::Member::update(void *param) {
+	Param *ratio = (Param *)param;
+
+	switch (ratio->type)
+	{
+		case Length:
+			if (this->_name != "head") {
+
+				this->_length = ratio->value * this->_length_ratio;
+				
+				this->_vertex[1] = this->_length;
+				this->_vertex[4] = this->_length;
+				this->_vertex[7] = this->_length;
+				this->_vertex[16] = this->_length;
+			}
+			break;
+
+		case Width:
+			if (this->_name != "head") {
+				this->_vertex[9] = ratio->value * MEMBER_BASE_WIDTH_START;
+				this->_vertex[12] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[18] = ratio->value * MEMBER_BASE_WIDTH_START;
+				this->_vertex[21] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[11] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[14] = ratio->value * (-MEMBER_BASE_WIDTH_START);
+				this->_vertex[20] = ratio->value * MEMBER_BASE_WIDTH_START;
+				this->_vertex[23] = ratio->value * MEMBER_BASE_WIDTH_START;
+
+				this->_vertex[0] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[3] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[6] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[15] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[2] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[5] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+				this->_vertex[8] = ratio->value * MEMBER_BASE_WIDTH_END;
+				this->_vertex[17] = ratio->value * (-MEMBER_BASE_WIDTH_END);
+			}
+			break;
+		
+		case Head_size:
+			if (this->_name == "head") {
+				this->_length = ratio->value * this->_length_ratio;
+				
+				this->_vertex[1] = this->_length;
+				this->_vertex[4] = this->_length;
+				this->_vertex[7] = this->_length;
+				this->_vertex[16] = this->_length;
+				
+				this->_vertex[9] = this->_length / 2;
+				this->_vertex[12] = -this->_length / 2;
+				this->_vertex[18] = this->_length / 2;
+				this->_vertex[21] = -this->_length / 2;
+				this->_vertex[11] = -this->_length / 2;
+				this->_vertex[14] = -this->_length / 2;
+				this->_vertex[20] = this->_length / 2;
+				this->_vertex[23] = this->_length / 2;
+
+				this->_vertex[0] = this->_length / 2;
+				this->_vertex[3] = -this->_length / 2;
+				this->_vertex[6] = -this->_length / 2;
+				this->_vertex[15] = this->_length / 2;
+				this->_vertex[2] = this->_length / 2;
+				this->_vertex[5] = -this->_length / 2;
+				this->_vertex[8] = this->_length / 2;
+				this->_vertex[17] = -this->_length / 2;
+			}
+			break;
+
+		default:
+			break;
+	}
+
+	glBindVertexArray(this->_vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24, &this->_vertex[0], GL_STATIC_DRAW);
+	
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+BVHAnimation::Member::~Member() {
+	glDeleteBuffers(1, &this->_vbo);
+	glDeleteBuffers(1, &this->_ibo);
+	glDeleteVertexArrays(1, &this->_vao);
+
+	delete[] this->_vertex;
+	delete[] this->_index;
 }

@@ -3,21 +3,21 @@ NAME = humangl
 SRCS = sources/main.cpp\
 		sources/BVHAnimation.cpp\
 		sources/GraphicsMath.cpp\
-		# sources/WindowApp.cpp\
+		sources/WindowApp.cpp\
+		sources/Observer.cpp\
+		sources/ImguiValues.cpp\
+		imgui/imgui.cpp\
+		imgui/imgui_demo.cpp\
+		imgui/imgui_draw.cpp\
+		imgui/imgui_impl_glfw.cpp\
+		imgui/imgui_impl_opengl3.cpp\
+		imgui/imgui_tables.cpp\
+		imgui/imgui_widgets.cpp\
+		# sources/Root.cpp\
+		# sources/reverseMat.cpp\
+		# sources/Animation.cpp\
 		# sources/Member.cpp\
 		# sources/InputParser.cpp\
-		# sources/Root.cpp\
-		# sources/Animation.cpp\
-		# sources/Observer.cpp\
-		# sources/ImguiValues.cpp\
-		# imgui/imgui.cpp\
-		# imgui/imgui_demo.cpp\
-		# imgui/imgui_draw.cpp\
-		# imgui/imgui_impl_glfw.cpp\
-		# imgui/imgui_impl_opengl3.cpp\
-		# imgui/imgui_tables.cpp\
-		# imgui/imgui_widgets.cpp\
-		# sources/reverseMat.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 
