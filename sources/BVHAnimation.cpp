@@ -576,6 +576,7 @@ void BVHAnimation::Parse(void)
 	InitMembersGraphic();
 
 	file.close();
+	this->_is_parsed = true;
 }
 
 
@@ -702,6 +703,18 @@ const std::string BVHAnimation::MissingNbFrames(size_t expected, size_t got)
 {
 	std::string message = ExceptionHeader();
 	message += "Invalid file format. Invalid Animation: Expected " + size_tToString(expected) + ", got " + size_tToString(got) + ".\n";
+
+	return message;
+}
+
+const std::string BVHAnimation::NotParsed(void)
+{
+	std::string message;
+
+	message += "BVHAnimation exception for:\n";
+	message += "  Name: " + this->_name + "\n";
+	message += "  Path: " + this->_file_path + "\n";
+	message += "Cannot run. The file is not parsed.";
 
 	return message;
 }
@@ -902,4 +915,60 @@ BVHAnimation::Member::~Member() {
 
 	delete[] this->_vertex;
 	delete[] this->_index;
+}
+
+
+void BVHAnimation::Run(void)
+{
+	if (!this->_is_parsed)
+		throw Exception(NotParsed());
+
+	for (size_t i = 0; i < this->_nb_frames; i++)
+	{
+		std::vector<float> frame = this->_animation[i];
+		size_t frame_elt_id = 0;
+
+		for (size_t j = 0; j < this->_members.size(); j++)
+		{
+			Member *member = this->_members[j];
+			std::vector<Member::Channel> channels = member->GetChannels();
+
+			for (size_t k = 0; k < channels.size(); k++)
+			{
+				float frame_elt = frame[frame_elt_id];
+				
+				switch (channels[k])
+				{
+					case Member::Channel::ZROT:
+						/* code */
+						break;
+
+					case Member::Channel::YROT:
+						/* code */
+						break;
+
+					case Member::Channel::XROT:
+						/* code */
+						break;
+
+					case Member::Channel::XPOS:
+						/* code */
+						break;
+
+					case Member::Channel::YPOS:
+						/* code */
+						break;
+
+					case Member::Channel::ZPOS:
+						/* code */
+						break;
+					
+					default:
+						break;
+				}
+
+				frame_elt_id++;
+			}
+		}
+	}
 }

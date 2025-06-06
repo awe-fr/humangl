@@ -106,6 +106,7 @@ class BVHAnimation
 		std::vector<std::vector<float>>	_animation;
 
 		size_t							_nb_line;
+		bool							_is_parsed;
 
 		// Exception messages
 		const std::string	ExceptionHeader(void);
@@ -123,6 +124,7 @@ class BVHAnimation
 		const std::string	MissingChannelElement(size_t expected, size_t got);
 		const std::string	MissingFrameElement(size_t expected, size_t got);
 		const std::string	MissingNbFrames(size_t expected, size_t got);
+		const std::string	NotParsed(void);
 
 
 		void							ParseMember(std::ifstream &file, BVHAnimation::Member &member);
@@ -138,7 +140,7 @@ class BVHAnimation
 	public:
 		// Constructor
 		BVHAnimation(std::string file_path, std::string name) :
-			_file_path(file_path), _name(name), _root(Root()) {}
+			_file_path(file_path), _name(name), _root(Root()), _is_parsed(false) {}
 
 		// Getters
 		const std::string						GetName(void) { return this->_name; }
@@ -152,6 +154,7 @@ class BVHAnimation
 		const std::vector<Member *>				GetMembers(void) {return this->_members;}
 
 		void	Parse(void);
+		void	Run(void);
 };
 
 #endif
