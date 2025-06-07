@@ -66,6 +66,10 @@ class BVHAnimation
 				void	SetOffset(vec3 offset) { this->_offset = offset; }
 				void	SetLength(float length) { this->_length = length; this->_length_ratio = length;}
 				void	SetChannels(std::vector<Channel> channels) { this->_channels = channels; }
+
+				void	setRotX(float var) {this->_degree.x = var;};
+				void	setRotY(float var) {this->_degree.y = var;};
+				void	setRotZ(float var) {this->_degree.z = var;};
 				
 				void					computeTravel();
 
@@ -82,8 +86,17 @@ class BVHAnimation
 
 		class Root : public Member
 		{
+			private:
+				vec3	_transDegree;
+
 			public:
 				Root(void) : Member("root", nullptr) {}
+
+				void	setTransX(float var) {this->_transDegree.x = var;};
+				void	setTransY(float var) {this->_transDegree.y = var;};
+				void	setTransZ(float var) {this->_transDegree.z = var;};
+
+				void initTrans(void) {this->_transDegree = {0,0,0};};
 		};
 
 		class Exception : public std::exception

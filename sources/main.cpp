@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 {
 	WindowsApp *app = new WindowsApp();
 
-	BVHAnimation animation("./animations/bvh/climb.bvh", "Climb");
+	BVHAnimation animation("./animations/bvh/walk.bvh", "Climb");
 	try
 	{
 		animation.Parse();
@@ -167,7 +167,7 @@ int main(int argc, char **argv)
 	}
 
 	std::vector<BVHAnimation::Member *> lst = inst->getList();
-
+	
 	while(app->isClosed() != true) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -175,10 +175,13 @@ int main(int argc, char **argv)
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+		
 		app->computeMovement();
 		glUseProgram(app->getProgramID());
-
+		
 		imgui_values.notify();
+
+		animation.Run();
 
 		for (std::vector<BVHAnimation::Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 			(*it)->computeTravel();
