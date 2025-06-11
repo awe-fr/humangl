@@ -727,6 +727,9 @@ void BVHAnimation::Run(void)
 		throw Exception(NotParsed());
 
 	std::vector<float> frame = this->_animation[frameCount];
+	// for (int i = 0; i < frame.size(); i++) {
+	// 	std::cout << frame[i] << std::endl;
+	// }
 	size_t frame_elt_id = 0;
 
 	// if (frameCount == 0) {
@@ -745,6 +748,8 @@ void BVHAnimation::Run(void)
 
 			float frame_elt = frame[frame_elt_id];
 			
+			// std::cout << member->GetName() << " " << frame_elt << std::endl;
+
 			switch (channels[k])
 			{
 				case Member::Channel::ZROT:
@@ -816,14 +821,14 @@ void BVHAnimation::Member::initGraphics(void) {
 	this->_model = identityMat(1);
 
 	this->_vertex = new GLfloat[sizeof(GLfloat) * 24];
-	this->_vertex[0] = MEMBER_BASE_WIDTH_END;		this->_vertex[1] = this->_length;  	this->_vertex[2] = MEMBER_BASE_WIDTH_END;
-	this->_vertex[3] = -MEMBER_BASE_WIDTH_END;		this->_vertex[4] = this->_length;  	this->_vertex[5] = -MEMBER_BASE_WIDTH_END;
-	this->_vertex[6] = -MEMBER_BASE_WIDTH_END;		this->_vertex[7] = this->_length;  	this->_vertex[8] = MEMBER_BASE_WIDTH_END;
-	this->_vertex[9] = MEMBER_BASE_WIDTH_START;		this->_vertex[10] = 0;      		this->_vertex[11] = -MEMBER_BASE_WIDTH_START;
-	this->_vertex[12] = -MEMBER_BASE_WIDTH_START;	this->_vertex[13] = 0;      		this->_vertex[14] = -MEMBER_BASE_WIDTH_START;
-	this->_vertex[15] = MEMBER_BASE_WIDTH_END;   	this->_vertex[16] = this->_length; 	this->_vertex[17] = -MEMBER_BASE_WIDTH_END;
-	this->_vertex[18] = MEMBER_BASE_WIDTH_START;	this->_vertex[19] = 0;      		this->_vertex[20] = MEMBER_BASE_WIDTH_START;
-	this->_vertex[21] = -MEMBER_BASE_WIDTH_START;	this->_vertex[22] = 0;      		this->_vertex[23] = MEMBER_BASE_WIDTH_START;
+	this->_vertex[0] = MEMBER_BASE_WIDTH_END;		this->_vertex[1] = this->_length;  this->_vertex[2] = MEMBER_BASE_WIDTH_END;
+	this->_vertex[3] = -MEMBER_BASE_WIDTH_END;		this->_vertex[4] = this->_length;  this->_vertex[5] = -MEMBER_BASE_WIDTH_END;
+	this->_vertex[6] = -MEMBER_BASE_WIDTH_END;		this->_vertex[7] = this->_length;  this->_vertex[8] = MEMBER_BASE_WIDTH_END;
+	this->_vertex[9] = MEMBER_BASE_WIDTH_START;		this->_vertex[10] = 0;      this->_vertex[11] = -MEMBER_BASE_WIDTH_START;
+	this->_vertex[12] = -MEMBER_BASE_WIDTH_START;	this->_vertex[13] = 0;      this->_vertex[14] = -MEMBER_BASE_WIDTH_START;
+	this->_vertex[15] = MEMBER_BASE_WIDTH_END;   	this->_vertex[16] = this->_length; this->_vertex[17] = -MEMBER_BASE_WIDTH_END;
+	this->_vertex[18] = MEMBER_BASE_WIDTH_START;	this->_vertex[19] = 0;      this->_vertex[20] = MEMBER_BASE_WIDTH_START;
+	this->_vertex[21] = -MEMBER_BASE_WIDTH_START;	this->_vertex[22] = 0;      this->_vertex[23] = MEMBER_BASE_WIDTH_START;
 
 	if (this->_name == "head") {
 		this->_vertex[0] = this->_length / 2;		this->_vertex[1] = this->_length;  	this->_vertex[2] = this->_length / 2;
@@ -868,10 +873,33 @@ void BVHAnimation::Member::initGraphics(void) {
 	this->_degree = {0,0,0};
 }
 
+void BVHAnimation::Member::computeTravel2() {
+		quat q = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
+
+		mat4 rotToChild = upcastmat3(quatToMat(q));
+	
+		this->_model = matMult(this->_model, rotToChild);
+}
+
 void BVHAnimation::Member::computeTravel() {
 	this->_model = identityMat(1);
 
-	if (this->_parent != nullptr && dynamic_cast<Root *>(this->_parent) == nullptr) {
+	if (this->_parent != nullptr) {
+
+		this->_model = this->_parent->_model;
+
+		this->_model = (matMult(this->_model, translationMat(this->_parent->_length * this->_parent->_offset.x, this->_parent->_length * this->_parent->_offset.y, this->_parent->_length * this->_parent->_offset.z)));
+
+		quat rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
+
+		this->_model = matMult(this->_model, upcastmat3(quatToMat(rot)));
+
+		// quat q = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
+
+		// mat4 rotToChild = upcastmat3(quatToMat(q));
+	
+		// this->_model = matMult(this->_model, rotToChild);
+
 
 		// if (_name == "rwrist") {
 		// 	std::cout << this->_degree.z << ", " << this->_degree.y << ", " << this->_degree.x << std::endl;
@@ -881,29 +909,58 @@ void BVHAnimation::Member::computeTravel() {
 
 
 
-		this->_model = this->_parent->_model;
-		this->_model = matMult(this->_model, translationMat(0, this->_parent->_length, 0));
+		// this->_model = this->_parent->_model;
+		// this->_model = matMult(this->_model, translationMat(0, this->_parent->_length, 0));
 
-		mat4 rev = matInverse(this->_parent->_model);
-		this->_model = matMult(this->_model, rev);
+		// mat4 rev = matInverse(this->_parent->_model);
+		// this->_model = matMult(this->_model, rev);
 
-		quat rot;
+		// quat rot;
 		// this->_degree.z += this->_parent->_degree.z;
 		// this->_degree.y += this->_parent->_degree.y;
 		// this->_degree.x += this->_parent->_degree.x;
-		rot = eulerToQuat((this->_degree.z + this->_parent->_degree.z) * DEG2RAD, (this->_degree.y + this->_parent->_degree.y) * DEG2RAD, (this->_degree.x + this->_parent->_degree.x) * DEG2RAD);
-		rot = eulerToQuat((this->_degree.z + this->_parent->_degree.z) * DEG2RAD, (this->_degree.y + this->_parent->_degree.y) * DEG2RAD, (this->_degree.x + this->_parent->_degree.x) * DEG2RAD);
+		// rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
 
-		quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
 
-		quat final = quatMult(rot, dir);
+		// quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
 
-		this->_model = matMult(this->_model, upcastmat3(quatToMat(final)));
-	} else if (this->_parent != nullptr && dynamic_cast<Root *>(this->_parent) != nullptr) {
-		// std::cout << this->_offset.x << std::endl;
-		this->_model = upcastmat3(quatMat(this->_offset, {0,1,0}));
-		// printMat(this->_model);
-		return;
+		// quat final = quatMult(rot, dir);
+
+		// this->_model = matMult(this->_model, upcastmat3(quatToMat(final)));
+	} else if (this->_parent == nullptr) {
+
+		// this->_model = matMult(this->_model, translationMat(0, this->_parent->_length, 0));
+
+
+		// quat rot;
+		// rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
+
+
+		// quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
+
+		// quat final = quatMult(rot, dir);
+
+		// this->_model = matMult(this->_model, upcastmat3(quatToMat(rot)));
+
+
+
+
+
+
+
+		// quat rot;
+		// // this->_degree.z += this->_parent->_degree.z;
+		// // this->_degree.y += this->_parent->_degree.y;
+		// // this->_degree.x += this->_parent->_degree.x;
+		// rot = eulerToQuat((this->_degree.z) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.x) * DEG2RAD);
+		// rot = eulerToQuat((this->_degree.z) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.x) * DEG2RAD);
+
+		// quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
+
+		// quat final = quatMult(rot, dir);
+
+		// this->_model = matMult(this->_model, upcastmat3(quatToMat(final)));
+		// return;
 	}
 }
 

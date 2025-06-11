@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 {
 	WindowsApp *app = new WindowsApp();
 
-	BVHAnimation animation("./animations/bvh/walk.bvh", "Climb");
+	BVHAnimation animation("./animations/bvh/swordplay.bvh", "Climb");
 	try
 	{
 		animation.Parse();
@@ -185,6 +185,10 @@ int main(int argc, char **argv)
 
 		for (std::vector<BVHAnimation::Member *>::iterator it = lst.begin(); it != lst.end(); it++)
 			(*it)->computeTravel();
+		
+		for (std::vector<BVHAnimation::Member *>::iterator it = lst.begin(); it != lst.end(); it++)
+			(*it)->computeTravel2();
+
 
 // 		Root *test = input_parser.getRoot();
 		// mat4 MVP = matMult(app->getProjection(), matMult(app->getView(), test->getModel()));

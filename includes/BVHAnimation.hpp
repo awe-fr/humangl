@@ -9,7 +9,7 @@
 # include "Observer.hpp"
 # include "ImguiValues.hpp"
 
-# define MEMBER_BASE_WIDTH_START 0.05f
+# define MEMBER_BASE_WIDTH_START 0.25f
 # define MEMBER_BASE_WIDTH_END 0.01f
 
 class BVHAnimation
@@ -72,6 +72,7 @@ class BVHAnimation
 				void	setRotZ(float var) {this->_degree.z = var;};
 				
 				void					computeTravel();
+				void					computeTravel2();
 
 				GLuint 	getVAO();
 				GLuint 	getVBO();
