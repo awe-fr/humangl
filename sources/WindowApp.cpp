@@ -30,7 +30,7 @@ WindowsApp::WindowsApp() {
 
 	this->_programID = loadShaders( "./shaders/shader.vert", "./shaders/shader.frag" );
 
-	this->_projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+	this->_projection = projectionMat(90.0f, (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -65,7 +65,6 @@ void WindowsApp::computeMovement() {
 	deltaTime();
 
 	static vec3 position{0.0f, 0.0f, 5.0f};
-	// std::cout << "x : " << position.x << " y : " << position.y << " z : " << position.z << std::endl;
 	static float horizontalAngle = M_PI;
 	static float verticalAngle = 0.0f;
 	static float speed = 3.0f;

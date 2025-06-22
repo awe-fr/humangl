@@ -721,21 +721,12 @@ const std::string BVHAnimation::NotParsed(void)
 
 void BVHAnimation::Run(void)
 {
-	static size_t frameCount = 0;
-
 	if (!this->_is_parsed)
 		throw Exception(NotParsed());
 
-	std::vector<float> frame = this->_animation[frameCount];
-	// for (int i = 0; i < frame.size(); i++) {
-	// 	std::cout << frame[i] << std::endl;
-	// }
-	size_t frame_elt_id = 0;
+	std::vector<float> frame = this->_animation[this->_frameCount];
 
-	// if (frameCount == 0) {
-	// 	for(int i = 0; i < frame.size(); i++)
-	// 		std::cout << frame[i] << std::endl;
-	// }
+	size_t frame_elt_id = 0;
 
 	for (size_t j = 0; j < this->_members.size(); j++)
 	{
@@ -747,48 +738,34 @@ void BVHAnimation::Run(void)
 			Root* rootMember = dynamic_cast<Root*>(member);
 
 			float frame_elt = frame[frame_elt_id];
-			
-			// std::cout << member->GetName() << " " << frame_elt << std::endl;
 
 			switch (channels[k])
 			{
 				case Member::Channel::ZROT:
-					// if (frameCount == 0)
-						// std::cout << frame_elt << " mz " << std::endl;
 					member->setRotZ(frame_elt);
 					break;
 
 				case Member::Channel::YROT:
-					// if (frameCount == 0)
-							// std::cout << frame_elt << " my " << std::endl;
 					member->setRotY(frame_elt);
 					break;
 
 				case Member::Channel::XROT:
-					// if (frameCount == 0)
-					// 	std::cout << frame_elt << " mx " << std::endl;
 					member->setRotX(frame_elt);
 					break;
 
 				case Member::Channel::XPOS:
-					// if (frameCount == 0)
-					// 	std::cout << frame_elt << " rz " << std::endl;
 					if (rootMember != nullptr) {
 						rootMember->setTransX(frame_elt);
 					}
 					break;
 
 				case Member::Channel::YPOS:
-					// if (frameCount == 0)
-					// 	std::cout << frame_elt << " ry " << std::endl;
 					if (rootMember != nullptr) {
 						rootMember->setTransY(frame_elt);
 					}
 					break;
 
 				case Member::Channel::ZPOS:
-					// if (frameCount == 0)
-					// 		std::cout << frame_elt << " rz " << std::endl;
 					if (rootMember != nullptr) {
 						rootMember->setTransZ(frame_elt);
 					}
@@ -801,9 +778,9 @@ void BVHAnimation::Run(void)
 			frame_elt_id++;
 		}
 	}
-	frameCount++;
-	if (frameCount >= this->_nb_frames)
-		frameCount = 0;
+	this->_frameCount++;
+	if (this->_frameCount >= this->_nb_frames)
+		this->_frameCount = 0;
 }
 
 void BVHAnimation::InitMembersGraphic(void) {
@@ -894,74 +871,16 @@ void BVHAnimation::Member::computeTravel() {
 
 		this->_model = matMult(this->_model, upcastmat3(quatToMat(rot)));
 
-		// quat q = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
-
-		// mat4 rotToChild = upcastmat3(quatToMat(q));
-	
-		// this->_model = matMult(this->_model, rotToChild);
-
-
-		// if (_name == "rwrist") {
-		// 	std::cout << this->_degree.z << ", " << this->_degree.y << ", " << this->_degree.x << std::endl;
-		// 	std::cout << this->_parent->_degree.z << ", " << this->_parent->_degree.y << ", " << this->_parent->_degree.x << std::endl;
-		// }
-
-
-
-
-		// this->_model = this->_parent->_model;
-		// this->_model = matMult(this->_model, translationMat(0, this->_parent->_length, 0));
-
-		// mat4 rev = matInverse(this->_parent->_model);
-		// this->_model = matMult(this->_model, rev);
-
-		// quat rot;
-		// this->_degree.z += this->_parent->_degree.z;
-		// this->_degree.y += this->_parent->_degree.y;
-		// this->_degree.x += this->_parent->_degree.x;
-		// rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
-
-
-		// quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
-
-		// quat final = quatMult(rot, dir);
-
-		// this->_model = matMult(this->_model, upcastmat3(quatToMat(final)));
 	} else if (this->_parent == nullptr) {
-
-		// this->_model = matMult(this->_model, translationMat(0, this->_parent->_length, 0));
-
-
-		// quat rot;
-		// rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
-
-
-		// quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
-
-		// quat final = quatMult(rot, dir);
-
-		// this->_model = matMult(this->_model, upcastmat3(quatToMat(rot)));
-
-
-
-
-
-
-
-		// quat rot;
-		// // this->_degree.z += this->_parent->_degree.z;
-		// // this->_degree.y += this->_parent->_degree.y;
-		// // this->_degree.x += this->_parent->_degree.x;
-		// rot = eulerToQuat((this->_degree.z) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.x) * DEG2RAD);
-		// rot = eulerToQuat((this->_degree.z) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.x) * DEG2RAD);
-
-		// quat dir = quatMat2({this->_offset.x,this->_offset.y,this->_offset.z}, {0,1,0});
-
-		// quat final = quatMult(rot, dir);
-
-		// this->_model = matMult(this->_model, upcastmat3(quatToMat(final)));
-		// return;
+		Root* rootMember = dynamic_cast<Root*>(this);
+		rootMember->computeTravelRoot();
 	}
+}
+
+void	BVHAnimation::Root::computeTravelRoot() {
+	this->_model = matMult(this->_model, translationMat(this->_transDegree.x, this->_transDegree.y, this->_transDegree.z));
+	quat rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
+	this->_model = matMult(this->_model, upcastmat3(quatToMat(rot)));
 }
 
 GLuint BVHAnimation::Member::getVAO() {

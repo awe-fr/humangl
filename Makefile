@@ -6,6 +6,7 @@ SRCS = sources/main.cpp\
 		sources/WindowApp.cpp\
 		sources/Observer.cpp\
 		sources/ImguiValues.cpp\
+		sources/manageAnim.cpp\
 		imgui/imgui.cpp\
 		imgui/imgui_demo.cpp\
 		imgui/imgui_draw.cpp\
@@ -13,11 +14,6 @@ SRCS = sources/main.cpp\
 		imgui/imgui_impl_opengl3.cpp\
 		imgui/imgui_tables.cpp\
 		imgui/imgui_widgets.cpp\
-		# sources/Root.cpp\
-		# sources/reverseMat.cpp\
-		# sources/Animation.cpp\
-		# sources/Member.cpp\
-		# sources/InputParser.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

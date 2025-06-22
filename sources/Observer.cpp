@@ -20,8 +20,6 @@ void IObserver::detach(void)
 	this->_subject = nullptr;
 }
 
-
-
 void ISubject::attach(IObserver *subscriber)
 {
 	if (std::find(this->_subscribers.begin(), this->_subscribers.end(), subscriber) == this->_subscribers.end())

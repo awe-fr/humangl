@@ -18,9 +18,12 @@ float *ImguiValues::getHeadSize(void) {
 	return &this->_head_size;
 }
 
+void ImguiValues::setAnimName(std::string new_name) {
+	this->_anim_name = new_name;
+}
+
 void ImguiValues::notify(void)
 {
-
 	if (this->_prev_length != this->_length)
 	{
 		Param param;
@@ -56,4 +59,24 @@ void ImguiValues::notify(void)
 
 		this->_prev_head_size = this->_head_size;
 	}
+
+	if (this->_prev_anim_name != this->_anim_name)
+	{
+		Param param;
+		param.type = Anim_name;
+		param.name = this->_anim_name;
+
+		for (std::vector<IObserver *>::iterator it = this->_subscribers.begin(); it != this->_subscribers.end(); it++)
+			(*it)->update(&param);
+
+		this->_prev_anim_name = this->_anim_name;
+	}
+}
+
+void ImguiValues::setAnim(BVHAnimation *anim) {
+	this->_actual_animation = anim;
+}
+
+BVHAnimation *ImguiValues::getAnim(void) {
+	return(this->_actual_animation);
 }

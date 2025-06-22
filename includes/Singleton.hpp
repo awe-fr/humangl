@@ -81,4 +81,26 @@ class MemberList : public Singleton<MemberList>, public List<BVHAnimation::Membe
 		}
 };
 
+class AnimationList : public Singleton<AnimationList>, public List<BVHAnimation>{
+	private:
+		AnimationList() {};
+		~AnimationList() {};
+		AnimationList(const AnimationList&) = delete;
+		AnimationList& operator=(const AnimationList&) = delete;
+
+		friend Singleton;
+
+	public:
+		BVHAnimation *findByName(std::string name)
+		{
+			for (std::vector<BVHAnimation *>::iterator it = this->_list.begin(); it != this->_list.end(); it++)
+			{
+				if ((*it)->GetName() == name)
+					return *it;
+			}
+
+			return nullptr;
+		}
+};
+
 #endif

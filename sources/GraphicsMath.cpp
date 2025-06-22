@@ -10,7 +10,6 @@ float det3(float a, float b, float c, float d, float e, float f, float g, float 
     float d2 = det2(d, f, g, i);
     float d3 = det2(d, e, g, h);
 
-	// std::cout << a * d1 - b * d2 + c * d3 << std::endl;
     return (a * d1 - b * d2 + c * d3);
 }
 

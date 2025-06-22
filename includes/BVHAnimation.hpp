@@ -97,7 +97,9 @@ class BVHAnimation
 				void	setTransY(float var) {this->_transDegree.y = var;};
 				void	setTransZ(float var) {this->_transDegree.z = var;};
 
-				void initTrans(void) {this->_transDegree = {0,0,0};};
+				void 	initTrans(void) {this->_transDegree = {0,0,0};};
+
+				void	computeTravelRoot();
 		};
 
 		class Exception : public std::exception
@@ -121,6 +123,8 @@ class BVHAnimation
 
 		size_t							_nb_line;
 		bool							_is_parsed;
+
+		size_t 							_frameCount;
 
 		// Exception messages
 		const std::string	ExceptionHeader(void);
@@ -154,7 +158,7 @@ class BVHAnimation
 	public:
 		// Constructor
 		BVHAnimation(std::string file_path, std::string name) :
-			_file_path(file_path), _name(name), _root(Root()), _is_parsed(false) {}
+			_file_path(file_path), _name(name), _root(Root()), _is_parsed(false), _frameCount(0) {}
 
 		// Getters
 		const std::string						GetName(void) { return this->_name; }
