@@ -724,7 +724,17 @@ void BVHAnimation::Run(void)
 	if (!this->_is_parsed)
 		throw Exception(NotParsed());
 
-	std::vector<float> frame = this->_animation[this->_frameCount];
+	static double start_time = glfwGetTime();
+	double time_elapsed = glfwGetTime() - start_time;
+	size_t frame_number = (size_t)(time_elapsed / this->_frame_time);
+	
+	if (frame_number >= this->_nb_frames)
+	{
+		start_time = glfwGetTime();
+		frame_number = 0;
+	}
+
+	std::vector<float> frame = this->_animation[frame_number];
 
 	size_t frame_elt_id = 0;
 
@@ -778,9 +788,6 @@ void BVHAnimation::Run(void)
 			frame_elt_id++;
 		}
 	}
-	this->_frameCount++;
-	if (this->_frameCount >= this->_nb_frames)
-		this->_frameCount = 0;
 }
 
 void BVHAnimation::InitMembersGraphic(void) {

@@ -5,6 +5,7 @@ WindowsApp::WindowsApp() {
 		std::cerr << "Failed to initialize GLFW." << std::endl;
 		exit(1);
 	}
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_SAMPLES, 4); // antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

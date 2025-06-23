@@ -18,7 +18,7 @@ manageAnim::~manageAnim() {
 }
 
 bool	manageAnim::setupAnimation() {
-	BVHAnimation *climb = new BVHAnimation("./animations/bvh/swordplay.bvh", "Climb");
+	BVHAnimation *climb = new BVHAnimation("./animations/bvh/climb.bvh", "Climb");
 	BVHAnimation *dance1 = new BVHAnimation("./animations/bvh/dance1.bvh", "Dance 1");
 	BVHAnimation *dance2 = new BVHAnimation("./animations/bvh/dance2.bvh", "Dance 2");
 	BVHAnimation *dance3 = new BVHAnimation("./animations/bvh/dance3.bvh", "Dance 3");
