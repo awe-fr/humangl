@@ -89,9 +89,10 @@ class BVHAnimation
 		{
 			private:
 				vec3	_transDegree;
+				float	_transRatio;
 
 			public:
-				Root(void) : Member("root", nullptr) {}
+				Root(void) : Member("root", nullptr), _transRatio(1) {}
 
 				void	setTransX(float var) {this->_transDegree.x = var;};
 				void	setTransY(float var) {this->_transDegree.y = var;};
@@ -100,6 +101,8 @@ class BVHAnimation
 				void 	initTrans(void) {this->_transDegree = {0,0,0};};
 
 				void	computeTravelRoot();
+
+				void	setTransRatio(float ratio);
 		};
 
 		class Exception : public std::exception

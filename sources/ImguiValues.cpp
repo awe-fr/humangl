@@ -29,13 +29,13 @@ void ImguiValues::notify(void)
 		Param param;
 		param.type = Length;
 		param.value = this->_length;
-
+		
 		for (std::vector<IObserver *>::iterator it = this->_subscribers.begin(); it != this->_subscribers.end(); it++)
 			(*it)->update(&param);
 
 		this->_prev_length = this->_length;
 	}
-
+	
 	if (this->_prev_width != this->_width)
 	{
 		Param param;
@@ -75,6 +75,9 @@ void ImguiValues::notify(void)
 
 void ImguiValues::setAnim(BVHAnimation *anim) {
 	this->_actual_animation = anim;
+	this->_prev_length = 1;
+	this->_prev_width = 1;
+	this->_prev_head_size = 1;
 }
 
 BVHAnimation *ImguiValues::getAnim(void) {

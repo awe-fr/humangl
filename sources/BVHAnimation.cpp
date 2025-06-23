@@ -880,9 +880,13 @@ void BVHAnimation::Member::computeTravel() {
 }
 
 void	BVHAnimation::Root::computeTravelRoot() {
-	this->_model = matMult(this->_model, translationMat(this->_transDegree.x, this->_transDegree.y, this->_transDegree.z));
+	this->_model = matMult(this->_model, translationMat(this->_transDegree.x * this->_transRatio, this->_transDegree.y * this->_transRatio, this->_transDegree.z * this->_transRatio));
 	quat rot = eulerToQuat((this->_degree.x) * DEG2RAD, (this->_degree.y) * DEG2RAD, (this->_degree.z) * DEG2RAD);
 	this->_model = matMult(this->_model, upcastmat3(quatToMat(rot)));
+}
+
+void	BVHAnimation::Root::setTransRatio(float ratio) {
+	this->_transRatio = ratio;
 }
 
 GLuint BVHAnimation::Member::getVAO() {
@@ -908,13 +912,17 @@ void BVHAnimation::Member::update(void *param) {
 	{
 		case Length:
 			if (this->_name != "head") {
-
 				this->_length = ratio->value * this->_length_ratio;
 				
 				this->_vertex[1] = this->_length;
 				this->_vertex[4] = this->_length;
 				this->_vertex[7] = this->_length;
 				this->_vertex[16] = this->_length;
+
+				if (this->_parent == nullptr) {
+					Root* rootMember = dynamic_cast<Root*>(this);
+					rootMember->setTransRatio(ratio->value);
+				}
 			}
 			break;
 
