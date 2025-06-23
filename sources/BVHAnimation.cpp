@@ -445,14 +445,9 @@ void BVHAnimation::Parse(void)
 {
 	std::ifstream file;
 
-	try
-	{
-		file.open(this->_file_path);
-	}
-	catch(std::exception& e)
-	{
+	file.open(this->_file_path);
+	if (!file.is_open())
 		throw Exception(CannotOpenFile());
-	}
 	
 	this->_nb_line = 0;
 	bool is_complete = false;
