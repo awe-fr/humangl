@@ -6,6 +6,12 @@
 
 int main(int argc, char **argv)
 {
+	if (argc != 1)
+	{
+		std::cout << "Invalid arguments.\nUsage: ./humangl" << std::endl;
+		exit(0);
+	}
+	
 	WindowsApp *app = new WindowsApp();
 
 	vec4 color; color.x = 0.33; color.y = 0.33; color.z = 0.33; color.w = 1;
